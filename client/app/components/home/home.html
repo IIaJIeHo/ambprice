@@ -1,0 +1,602 @@
+[fusion_text]<style>
+[ng-table-pagination]{
+display:none;
+}
+</style>
+<div class="b-front-form" >
+    <div class="loader" ng-hide="showapp"></div>
+    <div class="b-flex" ng-show="showapp">
+        <div class="b-flex-2">
+            <div class="b-bordered">
+            <div class="b-flex-group b-flex-text">
+<span class="i-wrap"><i class="i-graph-white"></i></span>
+                <div ng-show="((state.amber_type == 'Beads')&&(state.amber_class != 'Dominican')&&(state.amber_class != 'Mexican (Chiapas)')&&(state.amber_class != 'Indonesian (Sumatra)'))" ng-bind="state.amber_type+' | '+state.amber_class+' | '+state.form+' | '+state.frakcii"></div>
+
+                <div ng-show="((state.amber_type == 'Beads')&&((state.amber_class == 'Mexican (Chiapas)')||(state.amber_class == 'Indonesian (Sumatra)')))" ng-bind="state.amber_type+' | '+state.amber_class+' | '+state.form.split('/')[1]+' | '+state.frakcii"></div>
+
+                <div ng-show="((state.amber_type == 'Beads')&&(state.amber_class == 'Dominican'))" ng-bind="state.amber_type+' | '+state.amber_class+' | '+state.form+' | '+state.frakcii + ' | '+state.sort"></div>
+
+<div ng-show="((state.amber_type == 'Rough')&&(state.amber_class != 'Indonesian (Sumatra)')&&(table_state != 'Rough (large fractions)')&&((state.sort != 'MIX')&&(state.sort != 'С')))" ng-bind="state.amber_type+' | '+state.amber_class+' | '+state.form+' | '+state.frakcii+ ' | ' + state.sort"></div>
+
+<div ng-show="((state.amber_type == 'Rough')&&(state.amber_class != 'Indonesian (Sumatra)')&&(table_state != 'Rough (large fractions)')&&((state.sort == 'MIX')||(state.sort == 'С')))" ng-bind="state.amber_type+' | '+state.amber_class+' | '+state.frakcii+ ' | ' + state.sort"></div>
+
+<div ng-show="((state.amber_type == 'Rough')&&(state.amber_class != 'Indonesian (Sumatra)')&&(table_state == 'Rough (large fractions)'))" ng-bind="state.amber_type+' | '+state.amber_class+' | '+state.form.split('/')[0]+' | '+state.frakcii+ ' | ' + state.sort"></div>
+<div ng-show="((state.amber_type == 'Rough')&&(state.amber_class == 'Indonesian (Sumatra)'))" ng-bind="state.amber_type+' | '+state.amber_class+' | '+state.frakcii+ ' | ' + state.sort"></div>
+<div ng-show="state.amber_type == 'Indexes'" ng-bind="' Index - '+state.sub_type"></div>
+            </div>
+            <div class="b-flex-group b-bordered-bottom hidden">
+                <span class="i-wrap"><i class="i-graph-white"></i></span>
+                <select name="s_amber_type" id="s_amber_type" ng-options="option for option in select_options.amber_type" ng-model="state.amber_type" class="form-control"></select>
+                <select name="s_amber_class" id="s_amber_class" ng-options="option for option in select_options.amber_class" ng-model="state.amber_class" class="form-control"></select>
+                <select name="s_country" id="s_country" ng-options="option for option in select_options.country" ng-model="state.country" class="form-control"></select>
+                <span class="i-help"></span>
+            </div>
+
+            <div class="b-flex-group hidden">
+                <select name="s_form_ball" ng-show="state.amber_type == 'Balls'" id="s_form" ng-options="option for option in select_options.ball.form" ng-model="state.form" class="form-control"></select>
+                <select name="s_frakcii_ball" ng-show="state.amber_type == 'Balls'" id="s_frakcii" ng-options="option for option in select_options.ball.frakcii" ng-model="state.frakcii" class="form-control"></select>
+                <select name="s_form" ng-show="state.amber_type == 'Rough'" id="s_form" ng-options="option for option in select_options.form" ng-model="state.form" class="form-control bigger-form"></select>
+                <select name="s_frakcii" ng-show="state.amber_type == 'Rough'" id="s_frakcii" ng-options="option for option in select_options.frakcii" ng-model="state.frakcii" class="form-control"></select>
+                <select name="s_sort" ng-show="state.amber_type == 'Rough'" id="s_sort" ng-options="option for option in select_options.sort" ng-model="state.sort" class="form-control"></select>
+
+            </div>
+            <nvd3 options="options" data="data" class="with-3d-shadow with-transitions" api="api"></nvd3>
+            <div class="b-index">
+                <div class="b-index-table" ng-class="{'b-index-positive':index.positive}">
+                    <span class="i-png-strelka" ng-class="{'h-rotate':index.positive}"></span>
+                    <span ng-bind="index.value.toFixed(2)+ ' ' +state.currency"></span>
+                    <span ng-bind="index.persent"></span>
+                </div>
+                <div class="b-index-today">
+                  Current Price: <span class="big-price" ng-bind="index.actual.toFixed(2)+' '+state.currency"></span>
+                </div>
+                <div class="b-index-compare">
+                     <a target="_blank" href="/graphs/amber-price-charts">Compare Charts<i class="i-sravnenie"></i></a>
+                </div>  
+            </div>
+            </div>
+            <div class="b-index-description b-bordered" ng-show="((state.amber_type == 'Indexes')&&(descriptionindex[state.sub_type]))">
+                <h3 ng-bind="state.sub_type"></h3>
+                <p ng-bind="descriptionindex[state.sub_type]"></p>
+            </div>
+        </div>
+        <div class="b-flex-2 b-bordered b-padded">
+            <div class="btn-group b-flex-group" role="group" aria-label="...">
+                <span class="i-wrap"><i class="i-price-white"></i></span>
+<select name="s_amber_class" id="s_amber_class" ng-options="option for option in select_options.amber_class" ng-model="state.amber_class" class="form-control"></select>
+                <select name="s_country" ng-show="((state.amber_class != 'Indonesian (Sumatra)')&&(state.amber_class != 'Mexican (Chiapas)')&&(state.amber_class != 'Dominican'))" id="s_country" ng-options="option for option in select_options.table" ng-model="table_state" class="form-control"></select>
+                <select name="s_country" ng-show="state.amber_class == 'Indonesian (Sumatra)'" id="s_country" ng-options="option for option in select_options.indonezian.table" ng-model="table_state" class="form-control"></select>
+                <select name="s_country" ng-show="state.amber_class == 'Mexican (Chiapas)'" id="s_country" ng-options="option for option in select_options.mexican.table" ng-model="table_state" class="form-control"></select>
+                <select name="s_country" ng-show="state.amber_class == 'Dominican'" id="s_country" ng-options="option for option in select_options.domenic.table" ng-model="table_state" class="form-control"></select>
+
+                
+            </div>
+            <div class="table-wrap">
+
+<div class="pull-left" ng-show="((table_state == 'Rough (blue)')&&(state.amber_class == 'Dominican'))"><a href="/dominican-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Rough (green)')&&(state.amber_class == 'Dominican'))"><a href="/dominican-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Rough (yellow)')&&(state.amber_class == 'Dominican'))"><a href="/dominican-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Beads (blue)')&&(state.amber_class == 'Dominican'))"><a href="/dominican-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Beads (green)')&&(state.amber_class == 'Dominican'))"><a href="/dominican-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Beads (yellow)')&&(state.amber_class == 'Dominican'))"><a href="/dominican-instruction">Instructions and classification</a></div>
+
+
+<div class="pull-left" ng-show="((table_state == 'Rough (medium fractions)')&&(state.amber_class == 'Baltic'))"><a href="/balt-raw-instructions">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Rough (large fractions)')&&(state.amber_class == 'Baltic'))"><a href="/balt-raw-instructions">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Opaque beads')&&(state.amber_class == 'Baltic'))"><a href="/balt-beads-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Transparent beads')&&(state.amber_class == 'Baltic'))"><a href="/balt-beads-instruction">Instructions and classification</a></div>
+
+
+<div class="pull-left" ng-show="((table_state == 'Rough (medium fractions)')&&(state.amber_class == 'Ukrainian'))"><a href="/ukranian-raw-instructions">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Rough (large fractions)')&&(state.amber_class == 'Ukrainian'))"><a href="/ukranian-raw-instructions">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Opaque beads')&&(state.amber_class == 'Ukrainian'))"><a href="/ukranian-beads-instruction ">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Transparent beads')&&(state.amber_class == 'Ukrainian'))"><a href="/ukranian-beads-instruction ">Instructions and classification</a></div>
+
+<div class="pull-left" ng-show="((table_state == 'Beads')&&(state.amber_class == 'Mexican (Chiapas)'))"><a href="/mexican-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Rough')&&(state.amber_class == 'Indonesian (Sumatra)'))"><a href="/indonesian-instruction">Instructions and classification</a></div>
+<div class="pull-left" ng-show="((table_state == 'Beads')&&(state.amber_class == 'Indonesian (Sumatra)'))"><a href="/indonesian-instruction">Instructions and classification</a></div>
+            <div class="pull-right" ng-show="((table_state == 'Beads (yellow)')||(table_state == 'Beads (green)')||(table_state == 'Beads (blue)')||(table_state == 'Beads')||(table_state == 'Opaque beads')||(table_state == 'Transparent beads'))">Cost per 1 gram</div>
+            <div class="pull-right" ng-show="((table_state == 'Rough (yellow)')||(table_state == 'Rough (green)')||(table_state == 'Rough (blue)')||(table_state == 'Rough')||(table_state == 'Rough (medium fractions)')||(table_state == 'Rough (large fractions)'))">Cost per 1 kg</div>
+
+ <table ng-show="((table_state == 'Rough (blue)')&&(state.amber_class == 'Dominican'))" ng-table="tables.raw_blue" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Fraction
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<table ng-show="((table_state == 'Rough (yellow)')&&(state.amber_class == 'Dominican'))" ng-table="tables.raw_yellow" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Fraction
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2"></td>
+                </tr>
+            </table>
+<table ng-show="((table_state == 'Rough (green)')&&(state.amber_class == 'Dominican'))" ng-table="tables.raw_green" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Fraction
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+            <table ng-show="((table_state == 'Rough (medium fractions)')&&(state.amber_class != 'Indonesian (Sumatra)'))" ng-table="tables.raw" class="table table-bordered table-condensed table-striped table-orange table-double-head">
+<tr>
+    <td>
+        Fraction
+    </td>
+    <td>
+        Category
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        MIX
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii" rowspan="4"></td>
+                        <td ng-bind="cutedges(item.form)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'А'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'В'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'MIX'})" ng-bind="item.form3.toFixed(2)" rowspan="4"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'С'})" ng-bind="item.form4.toFixed(2)" rowspan="4"></td>
+                </tr>
+            </table>
+ <table ng-show="((table_state == 'Rough')&&(state.amber_class == 'Indonesian (Sumatra)'))" ng-table="tables.raw" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Fraction
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,sort:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,sort:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,sort:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,sort:'В'})" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,sort:'С'})" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+            <table ng-show="((table_state == 'Rough (large fractions)')&&(state.amber_class != 'Indonesian (Sumatra)'))" ng-table="tables.bigraw" class="table table-bordered table-condensed table-striped table-orange table-one-head">
+<tr>
+    <td>
+        Fraction
+    </td>
+    <td>
+        Category
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        MIX
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="makemoresymbol(item.frakcii)" rowspan="2"></td>
+                        <td ng-bind="getFirstWord(item.form)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'А'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'В'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'MIX'})" ng-bind="item.form3.toFixed(2)" rowspan="2"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'С'})" ng-bind="item.form4.toFixed(2)" rowspan="2"></td>
+                </tr>
+            </table>
+<table ng-show="((table_state == 'Beads')&&(state.amber_class == 'Mexican (Chiapas)'))" ng-table="tables.ball_opacue" class="table table-bordered table-condensed table-striped table-mexican table-orange pushed-first-row">
+
+<tr>
+    <td>
+        mm
+    </td>
+    <td>
+        g
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/ААА'})"ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/А'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/В'})" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/С'})" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+            <table ng-show="((table_state == 'Opaque beads')||((table_state == 'Beads')&&(state.amber_class == 'Indonesian (Sumatra)')))" ng-table="tables.ball_opacue" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        mm
+    </td>
+    <td>
+        g
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/А'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/В'})" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Opaque/С'})" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+
+<table ng-show="table_state == 'Beads (blue)'" ng-table="tables.ball_blue" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        mm
+    </td>
+    <td>
+        g
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<table ng-show="table_state == 'Beads (green)'" ng-table="tables.ball_green" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        mm
+    </td>
+    <td>
+        g
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<table ng-show="table_state == 'Beads (yellow)'" ng-table="tables.ball_yellow" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        mm
+    </td>
+    <td>
+        g
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<table ng-show="table_state == 'Transparent beads'" ng-table="tables.ball_transparent" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        mm
+    </td>
+    <td>
+        g
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Transparent/ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Transparent/АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Transparent/А'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Transparent/В'})" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Transparent/С'})" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+            <table ng-show="table_state == 'Indexes'" ng-table="indexes" class="table table-index">
+                <tr ng-repeat="item in $data track by $index" ng-class="{'table-index-positive':item.positive}" ng-click="change_state({amber_type:'Indexes',sub_type:item.sub_type,index_type:item.index_type})">
+                    <td><span ng-bind="item.sub_type"></span></td>
+                    <td ng-bind="item.value + ' '+state.currency"></td>
+                    <td ng-bind="item.diff_absolute+' '+state.currency"></td>
+                    <td ng-bind="item.diff + '%'"></td>
+                    <td><span class="i-png-strelka" ng-class="{'h-rotate':item.positive}"></span></td>      
+                </tr>
+            </table>
+<div class="table_footer">
+<ul class="hidden" ng-show="((table_state == 'Transparent beads')||(table_state == 'Opaque beads'))">
+<li>Калиброванный (без термообработки) +15%</li>
+<li>Кабошоны +15%</li>
+<li>Ошкуренный (неправильной формы) +15%</li>
+</ul>
+<span><i class="i-press-here"></i>Click on the value to display historical price chart</span>
+</div>
+</div>
+       <div class="row post-flex-data">
+           <div class="container-fluid">
+              <div class="pull-left"><a ng-href="{{link_to_pricelist}}" target="_blank"><i class="i-downprice"></i>Download price</a></div>
+              <div class="pull-right">Last Updated: <span ng-bind="state.date.name"</span></div>
+           </div>
+       </div>
+        </div>
+
+    </div>
+<!-- Begin MailChimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+ #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+ /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+    We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+<form action="//amberprice.us14.list-manage.com/subscribe/post?u=ac9e40320d916ee6fb03c2ed7&amp;id=725e4bd90e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+ <h2>Get price updates and news delivered to your e-mail!</h2>
+<div class="mc-field-group">
+ <label class="clear" for="mce-EMAIL"><span>Email Address  <span class="asterisk">*</span></span><span class="indicates-required"><span class="asterisk">*</span> indicates required</span>
+</label>
+ <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+</div>
+
+ <div id="mce-responses" class="clear">
+  <div class="response" id="mce-error-response" style="display:none"></div>
+  <div class="response" id="mce-success-response" style="display:none"></div>
+ </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_ac9e40320d916ee6fb03c2ed7_725e4bd90e" tabindex="-1" value=""></div>
+   
+    </div>
+</form>
+</div>
+<style>
+#mc_embed_signup br{
+display:none;
+}
+#mc_embed_signup form{
+  padding: 10px 20px;
+  background: #fcb040;
+}
+#mc_embed_signup .indicates-required{
+    float: right;
+    margin-right: 166px;
+    color: #333;
+    font-size:14px;
+    font-weight:900;
+}
+#mc_embed_signup .mc-field-group label{
+  color: #333;
+  font-size:14px;
+  font-weight:900;
+}
+#mc_embed_signup .button{
+  background: #333;
+  color:#fcb040;
+}
+#mc_embed_signup #mc-embedded-subscribe{
+    width: 10%;
+    display: inline-block;
+    height: 36px;
+    padding: 3px 0;
+    margin-left: 30px;
+}
+#mc_embed_signup #mce-EMAIL{
+width:86%;
+display:inline-block;
+}
+#mc_embed_signup .mc-field-group{
+padding-bottom:0;
+}
+#mc_embed_signup .mc-field-group{
+width:100%;
+}
+</style>
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+            <div class="b-deals">
+                <div class="b-bordered">
+                <div class="b-deals-header"><span class="i-wrap"><i class="i-sdelki-white"></i></span><span class="b-deals-header__text">TRANSACTIONS ON THE EXCHANGE</span><span><a href="/questions-answer" target="_blank">What is this?</a></span><span class="i-help"></span></div>
+                <table ng-table="deals" class="table table-bordered table-condensed table-striped table-per-deals table-new">
+                    <tr>
+                       <td> <strong>Date</strong></td>
+                        <td><strong>Lot Description</strong></td>
+                        <td><strong>Total Weight</strong></td>
+                        <td><strong>Total Price</strong></td>
+                        <td><strong>AmberPrice.Net</strong></td>
+                        <td><strong>Difference</strong></td>
+                    </tr>
+                    <tr ng-repeat="item in $data | limitTo : 5">
+                            <td ng-bind="format_date(item.datetime)"></td>
+                            <td ng-bind="item.description"></td>
+                            <td ng-bind="item.weight"></td>
+                            <td ng-bind="item.old_value + ' RUB'"></td>
+                            <td ng-bind="item.value + ' RUB'"></td>
+                            <td><span ng-class="{'i-green':item.positive,'i-red':!item.positive}" ng-bind="item.diff+'%'"></span><i ng-class="{'i-green-st':item.positive,'i-red-st':!item.positive}" </i></td>             
+</tr>
+                </table>
+                </div>
+                <a type="button" href="/spbex-transactions" target="blank" class="btn btn-default btn-red">Previous transactions</a>
+            </div>
+<a href="http://www.ambertrade.com"><img style="width:100%;" src="/wp-content/uploads/2016/12/bannerENG.png" /></a>
+<div class="b-calendar" >
+<h2 class="main-header">CALENDAR OF EVENTS</h2>
+<div class="b-calendar-30">
+<div id="slider hidden">
+  <a href="#" class="control_next" ng-click="change_current_event_month(true)" >></a>
+  <a href="#" class="control_prev" ng-click="change_current_event_month(false)" ><</a>
+  <ul class="hidden">
+    <li ng-repeat="mon in new_monthes track by $index">{{mon}}</li>
+  </ul>  
+</div>
+<div class="b-event-block" ng-repeat="event in example_events track by $index">
+<a ng-href="{{event.link}}" target="_blank" ><img ng-src="{{event.image}}" /></a>
+<a ng-href="{{event.link}}" target="_blank" ng-bind="event.title"></a><p ng-bind="event.excerpt"><p>
+</div>
+</div>
+<div class="b-calendar-70" ng-if="showevent" ng-class="{'hidden':!showapp}">
+    <table ng-table="events" class="table table table-bordered table-condensed table-hover table-calendar">
+        <tr ng-repeat="item in $data | limitTo : 10">
+            <td title="'Month'" sortable="'month'" ng-bind="item.month"></td>
+            <td title="'Start'" filter="{ start_date: 'select'}" filter-data="event_container.start_date"  sortable="'start_date'" ng-bind="format_date(item.start_date)"></td>
+            <td title="'Finish'" filter="{ end_date: 'select'}" filter-data="event_container.end_date" sortable="'end_date'" ng-bind="format_date(item.end_date)"></td>
+            <td title="'Event'" filter="{ title: 'text'}" sortable="'title'" ><a ng-href="{{item.link}}" target="_blank">{{item.title}}</a></td>
+            <td title="'Type'" filter="{ event_type: 'select'}" filter-data="event_container.event_type" sortable="'event_type'" ng-bind="item.event_type"></td>
+            <td title="'Location'" filter="{ event_position: 'select'}" filter-data="event_container.event_position" sortable="'event_position'" ng-bind="item.event_position"></td>
+        </tr>
+    </table>
+</div>
+</div>
+</div>

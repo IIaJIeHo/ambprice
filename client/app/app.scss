@@ -1,0 +1,10 @@
+@import "common/common";
+@import "common/bootstrap-theme";
+@import "common/ng-table";
+@import "common/nvd3";
+
+.app {
+  height: 100%;
+  background-color: $lightBgColor;
+}
+
