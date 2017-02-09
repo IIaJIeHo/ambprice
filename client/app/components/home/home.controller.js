@@ -17,6 +17,20 @@ class HomeController {
 
     that.$scope.events = new NgTableParams({count:100},{dataset: [{a:1}]}); /* test */
 
+    /*function custom_filter(){ 
+        return that.$scope.main&&that.$scope.main.map(function(date){
+            var val = date.data.filter(that.$scope.criteria)[0] || {value:0};
+            return {
+                x: date.title.split('/')[1],
+                y: val.value
+            }
+        })
+    }*/
+
+    let custom_filter = function() {
+        return AmberFactory.functions.customFilter(that.$scope.main,that.$scope.criteria);
+    }
+
     function init_default_data(){
         that.$scope.basestate = AmberFactory.base.baseState;
         that.$scope.state = AmberFactory.base.state;
@@ -1855,16 +1869,6 @@ class HomeController {
            }
        }
        
-        
-        function custom_filter(){
-            return that.$scope.main&&that.$scope.main.map(function(date){
-                var val = date.data.filter(that.$scope.criteria)[0] || {value:0};
-                return {
-                    x: date.title.split('/')[1],
-                    y: val.value
-                }
-            })
-        }
         
         function getRandomInt(min, max)
         {

@@ -135,7 +135,17 @@ let AmberFactory = function () {
                     if(dd<10){dd='0'+dd}
                     if(mm<10){mm='0'+mm}
                     return dd+'.'+mm+'.'+yyyy;
-                }
+                },
+    customFilter: function(main,criteria){ 
+        console.log(main);
+        return main&&main.map(function(date){
+            var val = date.data.filter(criteria)[0] || {value:0};
+            return {
+                x: date.title.split('/')[1],
+                y: val.value
+            }
+        })
+    }
   }
 
   let options = {
