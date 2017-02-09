@@ -17,18 +17,12 @@ class HomeController {
 
     that.$scope.events = new NgTableParams({count:100},{dataset: [{a:1}]}); /* test */
 
-    /*function custom_filter(){ 
-        return that.$scope.main&&that.$scope.main.map(function(date){
-            var val = date.data.filter(that.$scope.criteria)[0] || {value:0};
-            return {
-                x: date.title.split('/')[1],
-                y: val.value
-            }
-        })
-    }*/
-
     let custom_filter = function() {
         return AmberFactory.functions.customFilter(that.$scope.main,that.$scope.criteria);
+    }
+
+    let current_currency = function (date) {
+        return AmberFactory.functions.currentCurrency(date,that.$scope.currency,that.$scope.state.date,that.$scope.format_date);
     }
 
     function init_default_data(){
@@ -49,66 +43,8 @@ class HomeController {
 
         that.$scope.tables = {};
 
-        that.$scope.display = function () { /* (1) to do */
-            var data = custom_filter(), values_to_line,values_to_line_to_base;
-            if (data[0]){
-                if (that.$scope.currency.length == 0){
-                    that.$scope.currency = [{'EUR':1}];
-                }
-                if (!that.$scope.state.currency) {
-                    that.$scope.state.currency = 'EUR';
-                }
-                values_to_line = data.map(function(el){
-                        return {
-                            x:+(new Date(el.x.split('.').join('/'))),
-                            y:+el.y*current_currency(el.x)[that.$scope.state.currency]
-                        }
-                    });
-                
-                values_to_line = values_to_line.sort(function(el1,el2){
-                   return el1.x - el2.x;
-                });
-
-                var xDomainMin = values_to_line[0].x - 1000*60*60*24*1;
-                var xDomainMax = 1000*60*60*24*1 + values_to_line[values_to_line.length - 1].x;
-
-                if (that.$scope.multidata.length > 0){
-                    that.$scope.options.chart.xDomain[0] = xDomainMin > that.$scope.options.chart.xDomain[0] ? that.$scope.options.chart.xDomain[0] : xDomainMin;
-                    that.$scope.options.chart.xDomain[1] = xDomainMax > that.$scope.options.chart.xDomain[1] ? xDomainMax : that.$scope.options.chart.xDomain[1];
-                } else {
-                    that.$scope.options.chart.xDomain = [xDomainMin, xDomainMax];
-                }
-                
-                var y_values = values_to_line.sort(function(el1,el2){
-                   return el1.y - el2.y;
-                });
-                var yDomainMin = values_to_line[0].y*0.96;
-                var yDomainMax = values_to_line[values_to_line.length -1].y*1.04;
-                if (that.$scope.multidata.length > 0){
-                    that.$scope.options.chart.yDomain[0] = yDomainMin > that.$scope.options.chart.yDomain[0] ? that.$scope.options.chart.yDomain[0] : yDomainMin;
-                    that.$scope.options.chart.yDomain[1] = yDomainMax > that.$scope.options.chart.yDomain[1] ? yDomainMax : that.$scope.options.chart.yDomain[1];
-                } else {
-                    that.$scope.options.chart.yDomain = [yDomainMin, yDomainMax];
-                }
-                
-                values_to_line.sort(function(el1,el2){
-                   return el1.x - el2.x;
-                });
-                return {
-                    values: values_to_line,
-                    key: 'Value('+that.$scope.state.currency+')',
-                    color: '#74aa9d',
-                    strokeWidth: 2,
-                    classed: 'dashed'
-                };
-            }
-            return {
-                values: {x:0,y:0},
-                key: 'Value('+that.$scope.state.currency+')',
-                color: '#74aa9d',
-                strokeWidth: 2,
-                classed: 'dashed'
-            };               
+        that.$scope.display = function() { /* todo to object instead of list of variables */
+            return AmberFactory.functions.display(custom_filter,current_currency,that.$scope.currency,that.$scope.state.currency,that.$scope.multidata,that.$scope.options);
         }
 
         that.$scope.criteria = criteria_func();
@@ -1747,37 +1683,6 @@ class HomeController {
             
         }
         
-        
-  
-        function current_currency(date){
-            console.log(date);
-            if (date){
-                if (typeof date == "number"){
-                    var current_date = that.$scope.format_date(date).split('.');
-                    current_date = current_date[2] + '.' +current_date[1] + '.' + current_date[0];
-                } else {
-                    var current_date = date;
-                }
-                
-            } else {
-                if (that.$scope.state.date){
-                    var current_date = that.$scope.state.date.name.split('.');
-                    current_date = current_date[2] + '.' +current_date[1] + '.' + current_date[0];
-                } else {
-                    if (that.$scope.currency) {
-                        return that.$scope.currency[that.$scope.currency.length -1];
-                    }
-                }
-
-            }
-            var current_currency_object = that.$scope.currency.filter(function (cur) {
-               return cur.string_date === current_date;
-            });
-            if (current_currency_object.length == 0){
-              current_currency_object.push(that.$scope.currency[that.$scope.currency.length -1]);
-            }
-            return current_currency_object[0];
-        }
         
         
         that.$scope.change_state = function(updates) {

@@ -46,7 +46,7 @@ let AmberFactory = function () {
       form: "Opaque/Beadable",
       frakcii: "20-50g.",
       sort: "АА",
-      currency: store.get('currency') || "EUR",
+      currency: store.get('currency') || "RUB",
       amber_class: "Baltic",
       amber_type: "Rough",
       index_type: "General",
@@ -59,7 +59,7 @@ let AmberFactory = function () {
       form: "Opaque/Beadable",
       frakcii: "20-50g.",
       sort: "ААА",
-      currency: store.get('currency') || "EUR",
+      currency: store.get('currency') || "RUB",
       amber_class: "Baltic",
       amber_type: "Rough",
       index_type: "General",
@@ -145,7 +145,96 @@ let AmberFactory = function () {
                 y: val.value
             }
         })
-    }
+    },
+    currentCurrency: function(date,currency,state_date,format_date){
+        if (date){
+            if (typeof date == "number"){
+                var current_date = format_date(date).split('.');
+                current_date = current_date[2] + '.' +current_date[1] + '.' + current_date[0];
+            } else {
+                var current_date = date;
+            }
+            
+        } else {
+            if (state_date){
+                var current_date = state_date.name.split('.');
+                current_date = current_date[2] + '.' +current_date[1] + '.' + current_date[0];
+            } else {
+                if (currency) {
+                    return currency[currency.length -1];
+                }
+            }
+
+        }
+        var current_currency_object = currency.filter(function (cur) {
+           return cur.string_date === current_date;
+        });
+        if (current_currency_object.length == 0){
+          current_currency_object.push(currency[currency.length -1]);
+        }
+        return current_currency_object[0];
+    },
+    display:function(custom_filter,current_currency,currency,state_currency,multidata,options) {
+            var data = custom_filter(), values_to_line,values_to_line_to_base;
+            if (data[0]){
+                if (currency.length == 0){
+                    currency = [{'EUR':1}];
+                }
+                if (!state_currency) {
+                    state_currency = 'EUR';
+                }
+                values_to_line = data.map(function(el){
+                        return {
+                            x:+(new Date(el.x.split('.').join('/'))),
+                            y:+el.y*current_currency(el.x)[state_currency]
+                        }
+                    });
+                
+                values_to_line = values_to_line.sort(function(el1,el2){
+                   return el1.x - el2.x;
+                });
+
+                var xDomainMin = values_to_line[0].x - 1000*60*60*24*1;
+                var xDomainMax = 1000*60*60*24*1 + values_to_line[values_to_line.length - 1].x;
+
+                if (multidata.length > 0){
+                    options.chart.xDomain[0] = xDomainMin > options.chart.xDomain[0] ? options.chart.xDomain[0] : xDomainMin;
+                    options.chart.xDomain[1] = xDomainMax > options.chart.xDomain[1] ? xDomainMax : options.chart.xDomain[1];
+                } else {
+                    options.chart.xDomain = [xDomainMin, xDomainMax];
+                }
+                
+                var y_values = values_to_line.sort(function(el1,el2){
+                   return el1.y - el2.y;
+                });
+                var yDomainMin = values_to_line[0].y*0.96;
+                var yDomainMax = values_to_line[values_to_line.length -1].y*1.04;
+                if (multidata.length > 0){
+                    options.chart.yDomain[0] = yDomainMin > options.chart.yDomain[0] ? options.chart.yDomain[0] : yDomainMin;
+                    options.chart.yDomain[1] = yDomainMax > options.chart.yDomain[1] ? yDomainMax : options.chart.yDomain[1];
+                } else {
+                    options.chart.yDomain = [yDomainMin, yDomainMax];
+                }
+                
+                values_to_line.sort(function(el1,el2){
+                   return el1.x - el2.x;
+                });
+                return {
+                    values: values_to_line,
+                    key: 'Value('+state_currency+')',
+                    color: '#74aa9d',
+                    strokeWidth: 2,
+                    classed: 'dashed'
+                };
+            }
+            return {
+                values: {x:0,y:0},
+                key: 'Value('+state_currency+')',
+                color: '#74aa9d',
+                strokeWidth: 2,
+                classed: 'dashed'
+            };               
+        }
   }
 
   let options = {
