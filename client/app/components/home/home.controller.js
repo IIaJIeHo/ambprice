@@ -69,23 +69,47 @@ class HomeController {
 
     }
 
-
-  function call_data(){
-    init_default_data();
-    set_default_state_for_amber_type();
-    if (window.localStorage){
-        var tabledata = store.get('tabledata');
-        that.$scope.version = store.get('version');
-        call_version();
-    } 
-    if (tabledata){
-        that.$scope.get_from_localStorage = true;
-        make_things_done(tabledata);
-        first_call(tabledata.length,start_calling);
-    } else {
-        start_calling();
+    function set_default_state_for_amber_type(amber_type){
+        if (amber_type == 'Rough'){
+            that.$scope.state.frakcii = "20-50g.";
+            that.$scope.state.sort = "ААА";
+            that.$scope.state.form = "Opaque/Beadable";
+            that.$scope.state.country = "Европа";
+        } else if (amber_type == 'Beads'){
+            that.$scope.state.frakcii = "12mm+/1g+";
+            if (that.$scope.state.amber_class != 'Dominican'){
+                that.$scope.state.form = "Opaque/ААА";
+            }
+            
+            that.$scope.state.country = "Европа";
+        } else if (amber_type == 'Indexes'){
+            that.$scope.state.index_type = "General";
+        }
     }
-    call_ajax_to_every(15);
+
+  function call_ajax_to_first(posts_per_page) {
+    $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=first')
+        .then(function(data){
+  
+            if (data.data.length != 0) {
+                var main = postupdate(data);
+                if (counter_main < 7){
+                    that.$scope.bundle = splice_array(that.$scope.bundle,main);
+                    make_things_done(that.$scope.bundle);
+                }
+            } else {
+
+            }
+        });
+  }
+
+  function start_calling() {
+    call_ajax_to_first(15);
+    var posts_per_page = 5;
+    var page = 1;
+    for(var i = page;i<8;i++){
+        call_ajax_to_add_data(posts_per_page,i);
+    }
   }
 
   function call_version() {
@@ -116,6 +140,27 @@ class HomeController {
 
         });
   }
+  function call_data(){
+    init_default_data();
+
+    set_default_state_for_amber_type();
+
+    if (window.localStorage){
+
+        var tabledata = store.get('tabledata');
+        that.$scope.version = store.get('version');
+        call_version();
+    } 
+    if (tabledata){
+        that.$scope.get_from_localStorage = true;
+        make_things_done(tabledata);
+        first_call(tabledata.length,start_calling);
+    } else {
+        start_calling();
+    }
+    call_ajax_to_every(15);
+  }
+
 
   function splice_array(main,second){
     if (main){
@@ -425,33 +470,10 @@ class HomeController {
     return val.replace(/г/g, 'g').replace(/мм/g, 'mm');
   }
 
-  function start_calling() {
-    call_ajax_to_first(15);
-    var posts_per_page = 5;
-    var page = 1;
-    for(var i = page;i<8;i++){
-        call_ajax_to_add_data(posts_per_page,i);
-    }
-  }
-
   var tempmain = [];
   var counter_main = 0;
   var counter_bundle = 0;
-  function call_ajax_to_first(posts_per_page) {
-    $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=first')
-        .then(function(data){
-  
-            if (data.data.length != 0) {
-                var main = postupdate(data);
-                if (counter_main < 7){
-                    that.$scope.bundle = splice_array(that.$scope.bundle,main);
-                    make_things_done(that.$scope.bundle);
-                }
-            } else {
 
-            }
-        });
-  }
   function call_ajax_to_every(posts_per_page) {
     $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=every')
         .then(function(data){
@@ -1158,23 +1180,7 @@ class HomeController {
                     return data;
                 });
         }
-        function set_default_state_for_amber_type(amber_type){
-            if (amber_type == 'Rough'){
-                that.$scope.state.frakcii = "20-50g.";
-                that.$scope.state.sort = "ААА";
-                that.$scope.state.form = "Opaque/Beadable";
-                that.$scope.state.country = "Европа";
-            } else if (amber_type == 'Beads'){
-                that.$scope.state.frakcii = "12mm+/1g+";
-                if (that.$scope.state.amber_class != 'Dominican'){
-                    that.$scope.state.form = "Opaque/ААА";
-                }
-                
-                that.$scope.state.country = "Европа";
-            } else if (amber_type == 'Indexes'){
-                that.$scope.state.index_type = "General";
-            }
-        }
+
         var height_of_chart = 550;
         that.$scope.clear_them_all = function () {
             that.$scope.multidata = [];
