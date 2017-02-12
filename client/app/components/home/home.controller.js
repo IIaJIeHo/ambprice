@@ -74,12 +74,16 @@ class HomeController {
     }
 
     let postupdate = function(data){
-        return AmberFactory.functions.postUpdate(data);
+        return AmberFactory.functions.postUpdate(data); /* Update raw data into object*/
+    }
+
+    let splice_array = function(main,second) {
+        return AmberFactory.functions.spliceArray(main,second); /* Update data inside bundle array */
     }
 
     function call_ajax_to_first(posts_per_page) {
-    $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=first')
-        .then(function(data){
+        $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=first')
+            .then(function(data){
 
             if (data.data.length != 0) {
                 var main = postupdate(data);
@@ -87,9 +91,7 @@ class HomeController {
                     that.$scope.bundle = splice_array(that.$scope.bundle,main);
                     make_things_done(that.$scope.bundle);
                 }
-            } else {
-
-            }
+            } 
         });
     }
 
@@ -152,25 +154,6 @@ class HomeController {
   }
 
 
-  function splice_array(main,second){
-    if (main){
-        var titles = main.map(function(obj){
-            return obj.title;
-        });
-        second.forEach(function(obj){
-            if (titles.indexOf(obj.title) != -1){
-                var removed = main.splice(titles.indexOf(obj.title), 1, obj);
-            } else {
-                main.push(obj);
-            }
-            
-        });
-        return main;
-    } else {
-        return second;
-    }
-
-  }
   function make_things_done(main){
             that.$scope.bundle = main;
             that.$scope.main = that.$scope.bundle.filter(function(data){

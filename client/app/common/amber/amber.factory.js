@@ -284,156 +284,174 @@ let round_to_two = function(str) {
             }
         }
     },
-        postUpdate: function(data){
-            return data.data.map(function(plans){
-                    var my_array = plans.content.slice(3,-5)
-                    .replace(/&#171;/g, '"')
-                    .replace(/&#187;/g, '"')
-                    .replace(/&#8212;/g, '-')
-                    .replace(/&#8243;/g, '"');
+    postUpdate: function(data){
+        return data.data.map(function(plans){
+                var my_array = plans.content.slice(3,-5)
+                .replace(/&#171;/g, '"')
+                .replace(/&#187;/g, '"')
+                .replace(/&#8212;/g, '-')
+                .replace(/&#8243;/g, '"');
 
-                    my_array = unicode.unescape(my_array);
-                    my_array = JSON.parse(my_array);
-                    var meta_data = plans.title.split('/');
-                    
-                    if (meta_data[0] == 'amber') {
-                        if (meta_data[2] == 'raw'){
-                            if (meta_data[3] == 'indonezian'){
-                                my_array = my_array.map(function(arr){
-                                    return {
-                                        frakcii: repa(arr[0]),
-                                        sort: convert[arr[1]],
-                                        country: arr[2],
-                                        value: round_to_two(arr[3])
-                                    }
-                                });
-                            } else if (meta_data[3] == 'domenic'){
-                                my_array = my_array.map(function(arr){
-                                    return {
-                                        frakcii: repa(arr[0]),
-                                        sort: convert[arr[2]],
-                                        form: convert[arr[1]],
-                                        country: arr[3],
-                                        value: round_to_two(arr[4])
-                                    }
-                                });
-                            } else {
-                                my_array = my_array.map(function(arr){
-                                    return {
-                                        frakcii: repa(arr[0]),
-                                        form: convert[arr[2]],
-                                        sort: convert[arr[1]],
-                                        country: arr[3],
-                                        value: round_to_two(arr[4])
-                                    }
-                                });
-                            }
-
-                        } else if (meta_data[2] == 'ball'){
-                            if (meta_data[3] == 'domenic'){
-                                my_array = my_array.map(function(arr){
-                                    return {
-                                        frakcii: arr[0],
-                                        form: arr[1],
-                                        sort: convert[arr[2]],
-                                        country: arr[3],
-                                        value: round_to_two(arr[4])
-                                    }
-                                });
-                            } else {
-                                my_array = my_array.map(function(arr){
-                                    return {
-                                        frakcii: repa(arr[0]),
-                                        form: convert[arr[1]],
-                                        country: arr[2],
-                                        value: round_to_two(arr[3])
-                                    }
-                                });
-                            }                    
-                            
-                        } else if (meta_data[2] == 'index'){
+                my_array = unicode.unescape(my_array);
+                my_array = JSON.parse(my_array);
+                var meta_data = plans.title.split('/');
+                
+                if (meta_data[0] == 'amber') {
+                    if (meta_data[2] == 'raw'){
+                        if (meta_data[3] == 'indonezian'){
                             my_array = my_array.map(function(arr){
-                                var type;
-                                if (arr[0] == "-"){
-                                    type = "General";
-                                } else{
-                                    type = convert[arr[0]];
-                                }
                                 return {
-                                    index_type: type,
-                                    sub_type: arr[1],
+                                    frakcii: repa(arr[0]),
+                                    sort: convert[arr[1]],
                                     country: arr[2],
                                     value: round_to_two(arr[3])
                                 }
                             });
-                            
+                        } else if (meta_data[3] == 'domenic'){
+                            my_array = my_array.map(function(arr){
+                                return {
+                                    frakcii: repa(arr[0]),
+                                    sort: convert[arr[2]],
+                                    form: convert[arr[1]],
+                                    country: arr[3],
+                                    value: round_to_two(arr[4])
+                                }
+                            });
+                        } else {
+                            my_array = my_array.map(function(arr){
+                                return {
+                                    frakcii: repa(arr[0]),
+                                    form: convert[arr[2]],
+                                    sort: convert[arr[1]],
+                                    country: arr[3],
+                                    value: round_to_two(arr[4])
+                                }
+                            });
                         }
-                        return {
-                          title: plans.title,
-                          type: meta_data[0],
-                          time: +(new Date(meta_data[1].split('.').join('/'))),
-                          data: my_array,
-                          amber_type: convert[meta_data[2]],
-                          amber_class: convert[meta_data[3]]
-                        };  
 
-                    } else if (meta_data[0] == 'currency'){
-                        var labels = my_array[0];
-                        my_array = my_array.slice(1).map(function(arr){
-                            var temp = new Object();
-                            for(var i=0;i<arr.length;i++){
-                                temp[labels[i]] = arr[i];
-                            }
-                            return temp;
-                        });
-                        return {
-                            title: plans.title,
-                            type: meta_data[0],
-                            data: my_array
-                        }
-                    } else if (meta_data[0] == 'deals'){
+                    } else if (meta_data[2] == 'ball'){
+                        if (meta_data[3] == 'domenic'){
+                            my_array = my_array.map(function(arr){
+                                return {
+                                    frakcii: arr[0],
+                                    form: arr[1],
+                                    sort: convert[arr[2]],
+                                    country: arr[3],
+                                    value: round_to_two(arr[4])
+                                }
+                            });
+                        } else {
+                            my_array = my_array.map(function(arr){
+                                return {
+                                    frakcii: repa(arr[0]),
+                                    form: convert[arr[1]],
+                                    country: arr[2],
+                                    value: round_to_two(arr[3])
+                                }
+                            });
+                        }                    
+                        
+                    } else if (meta_data[2] == 'index'){
                         my_array = my_array.map(function(arr){
+                            var type;
+                            if (arr[0] == "-"){
+                                type = "General";
+                            } else{
+                                type = convert[arr[0]];
+                            }
                             return {
-                                datetime: +(new Date(arr[0].split('.').join('/') + " "+ arr[1])),
-                                description: arr[2],
-                                weight: arr[3],
-                                old_value: arr[4],
-                                value: arr[5],
-                                diff: arr[6],
-                                title: plans.title,
+                                index_type: type,
+                                sub_type: arr[1],
+                                country: arr[2],
+                                value: round_to_two(arr[3])
                             }
                         });
-                        return {
-                            type: meta_data[0],
-                            data: my_array
-                        }
-                    } else if (meta_data[0] == 'pricelist'){
-                        my_array = my_array.map(function(arr){
-                            var newdate = arr[0].slice(3,5)+'/'+arr[0].slice(0,2)+'/'+arr[0].slice(6);
-                            return {
-                                datetime: +(new Date(Date.parse(newdate))),
-                                link: arr[1],
-                            }
-                        });
-                        return {
-                            type: meta_data[0],
-                            data: my_array,
-                            title: plans.title
-                        }
-                    } else if (meta_data[0] == 'descriptionindex') {
-                        var nicearr = {};
-                        my_array.forEach(function(arr){
-                            nicearr[arr[0]]=arr[1];
-                        });
-                        return {
-                            type: meta_data[0],
-                            data: nicearr,
-                            title: plans.title
-                        }
+                        
                     }
-                    return {};
+                    return {
+                      title: plans.title,
+                      type: meta_data[0],
+                      time: +(new Date(meta_data[1].split('.').join('/'))),
+                      data: my_array,
+                      amber_type: convert[meta_data[2]],
+                      amber_class: convert[meta_data[3]]
+                    };  
+
+                } else if (meta_data[0] == 'currency'){
+                    var labels = my_array[0];
+                    my_array = my_array.slice(1).map(function(arr){
+                        var temp = new Object();
+                        for(var i=0;i<arr.length;i++){
+                            temp[labels[i]] = arr[i];
+                        }
+                        return temp;
+                    });
+                    return {
+                        title: plans.title,
+                        type: meta_data[0],
+                        data: my_array
+                    }
+                } else if (meta_data[0] == 'deals'){
+                    my_array = my_array.map(function(arr){
+                        return {
+                            datetime: +(new Date(arr[0].split('.').join('/') + " "+ arr[1])),
+                            description: arr[2],
+                            weight: arr[3],
+                            old_value: arr[4],
+                            value: arr[5],
+                            diff: arr[6],
+                            title: plans.title,
+                        }
+                    });
+                    return {
+                        type: meta_data[0],
+                        data: my_array
+                    }
+                } else if (meta_data[0] == 'pricelist'){
+                    my_array = my_array.map(function(arr){
+                        var newdate = arr[0].slice(3,5)+'/'+arr[0].slice(0,2)+'/'+arr[0].slice(6);
+                        return {
+                            datetime: +(new Date(Date.parse(newdate))),
+                            link: arr[1],
+                        }
+                    });
+                    return {
+                        type: meta_data[0],
+                        data: my_array,
+                        title: plans.title
+                    }
+                } else if (meta_data[0] == 'descriptionindex') {
+                    var nicearr = {};
+                    my_array.forEach(function(arr){
+                        nicearr[arr[0]]=arr[1];
+                    });
+                    return {
+                        type: meta_data[0],
+                        data: nicearr,
+                        title: plans.title
+                    }
+                }
+                return {};
+        });
+    },
+    spliceArray: function(main,second) {
+        if (main){
+            var titles = main.map(function(obj){
+                return obj.title;
             });
+            second.forEach(function(obj){
+                if (titles.indexOf(obj.title) != -1){
+                    var removed = main.splice(titles.indexOf(obj.title), 1, obj);
+                } else {
+                    main.push(obj);
+                }
+                
+            });
+            return main;
+        } else {
+            return second;
         }
+      }
   }
 
   let options = {
