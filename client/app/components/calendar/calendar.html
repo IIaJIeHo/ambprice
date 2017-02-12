@@ -1,0 +1,28 @@
+<div class="b-calendar" >
+    <h2 class="main-header">CALENDAR OF EVENTS</h2>
+    <div class="b-calendar-30">
+    <div class="hidden" id="slider">
+      <a href="#" class="control_next" ng-click="change_current_event_month(true)" >></a>
+      <a href="#" class="control_prev" ng-click="change_current_event_month(false)" ><</a>
+      <ul class="hidden">
+        <li ng-repeat="mon in new_monthes track by $index">{{mon}}</li>
+      </ul>  
+    </div>
+    <div class="b-event-block" ng-repeat="event in example_events track by $index">
+        <a ng-href="{{event.link}}" target="_blank" ><img ng-src="{{event.image}}" /></a>
+        <a ng-href="{{event.link}}" target="_blank" ng-bind="event.title"></a><p ng-bind="event.excerpt"><p>
+    </div>
+    </div>
+    <div class="b-calendar-70" ng-if="showevent" ng-class="{'hidden':!showapp}">
+        <table ng-table="events" class="table table table-bordered table-condensed table-hover table-calendar">
+            <tr ng-repeat="item in $data track by $index">
+                <td title="'Month'" sortable="'month'" ng-bind="item.month"></td>
+                <td title="'Start'" filter="{ start_date: 'select'}" filter-data="event_container.start_date"  sortable="'start_date'" ng-bind="format_date(item.start_date)"></td>
+                <td title="'Finish'" filter="{ end_date: 'select'}" filter-data="event_container.end_date" sortable="'end_date'" ng-bind="format_date(item.end_date)"></td>
+                <td title="'Event'" filter="{ title: 'text'}" sortable="'title'" ><a ng-href="{{item.link}}" target="_blank">{{item.title}}</a></td>
+                <td title="'Type'" filter="{ event_type: 'select'}" filter-data="event_container.event_type" sortable="'event_type'" ng-bind="item.event_type"></td>
+                <td title="'Location'" filter="{ event_position: 'select'}" filter-data="event_container.event_position" sortable="'event_position'" ng-bind="item.event_position"></td>
+            </tr>
+        </table>
+    </div>
+</div>

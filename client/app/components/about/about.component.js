@@ -1,6 +1,6 @@
 import template from './about.html';
-import controller from './about.controller';
-import './about.scss';
+import controller from '../home/home.controller';
+import '../home/home.scss';
 
 let aboutComponent = {
   restrict: 'E',

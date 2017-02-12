@@ -94,7 +94,7 @@
 <!-- /Yandex.Metrika counter -->
   </head>
   <body ng-app="app" ng-strict-di ng-cloak>
-
+   <select ng-options="option for option in select_options.currency" ng-model="state.currency" class="form-control"></select> <!-- Provide another branch of components -->
     <app>
       Loading...
     </app>

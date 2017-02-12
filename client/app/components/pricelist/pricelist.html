@@ -1,0 +1,401 @@
+<style>
+[ng-table-pagination]{
+display:none;
+}
+</style>
+<div class="loader" ng-hide="showapp"></div>
+<div class="b-front-form" ng-show="showapp" ng-class="{'hidden':!showapp}">
+<div class="b-select-form">
+<select name="s_amber_class" class="form-control" id="s_amber_class" ng-options="option for option in select_options.amber_class" ng-model="state.amber_class"></select>
+<select name="s_currency" class="form-control hidden" id="s_form" ng-options="option for option in select_options.currency" ng-model="state.currency"></select>
+<select name="s_date" class="form-control" id="s_form" ng-options="option.name for option in select_options.date" ng-model="state.date"></select>
+<select name="s_country" class="form-control hidden" id="s_country" ng-options="option for option in select_options.country" ng-model="state.country"></select>
+<a class="btn btn-default btn-blue" ng-href="{{link_to_pricelist}}" target="_blank"><i class="i-white-icon"></i>Скачать прайс</a>
+</div>
+    <div class="b-flex">
+<div class="b-flex-2" ng-show="state.amber_class != 'Мексиканский'">
+<h3 ng-show="(state.amber_class == 'Доминиканский')">Янтарь (голубой)</h3>
+<table ng-show="((state.amber_class == 'Доминиканский'))" ng-table="tables.raw_blue" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Фракция
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<h3 ng-show="(state.amber_class == 'Доминиканский')">Янтарь (желтый)</h3>
+<table ng-show="((state.amber_class == 'Доминиканский'))" ng-table="tables.raw_yellow" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Фракция
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<h3 ng-show="(state.amber_class == 'Доминиканский')">Янтарь (зеленый)</h3>
+<table ng-show="((state.amber_class == 'Доминиканский'))" ng-table="tables.raw_green" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Фракция
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+
+
+<h3 ng-show="((state.amber_class != 'Индонезийский')&&(state.amber_class != 'Доминиканский'))">Сырец (средние фракции)</h3>
+            <table ng-table="tables.raw" ng-show="((state.amber_class != 'Индонезийский')&&(state.amber_class != 'Доминиканский'))" class="table table-bordered table-condensed table-striped table-orange table-double-head">
+<tr>
+    <td>
+        Фракция
+    </td>
+    <td>
+        Категория
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        МИКС
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii" rowspan="4"></td>
+                        <td ng-bind="cutedges(item.form)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'А'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'В'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'МИКС'})" ng-bind="item.form3.toFixed(2)" rowspan="4"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'С'})" ng-bind="item.form4.toFixed(2)" rowspan="4"></td>
+                </tr>
+            </table>
+<h3 ng-show="(state.amber_class == 'Индонезийский')">Сырец</h3>
+ <table ng-show="(state.amber_class == 'Индонезийский')" ng-table="tables.raw" class="table table-bordered table-condensed table-striped table-orange table-half-head">
+<tr>
+    <td>
+        Фракция
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                       <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'В'})" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'С'})" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+<h3 ng-show="((state.amber_class != 'Индонезийский')&&(state.amber_class != 'Доминиканский'))">Сырец (крупные фракции)</h3>
+            
+            <table ng-table="tables.bigraw" ng-show="((state.amber_class != 'Индонезийский')&&(state.amber_class != 'Доминиканский'))" class="table table-bordered table-condensed table-striped table-orange table-one-head">
+<tr>
+    <td>
+        Фракция
+    </td>
+    <td>
+        Категория
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        МИКС
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.frakcii" rowspan="2"></td>
+                        <td ng-bind="getFirstWord(item.form)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'А'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'В'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'МИКС'})" ng-bind="item.form3.toFixed(2)" rowspan="2"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:item.form,sort:'С'})" ng-bind="item.form4.toFixed(2)" rowspan="2"></td>
+                </tr>
+            </table>
+
+</div>
+<div class="b-flex-2">
+<h3 ng-show="((state.amber_class == 'Мексиканский')||(state.amber_class == 'Индонезийский'))">Шары</h3>
+<table ng-show="state.amber_class == 'Мексиканский'" ng-table="tables.ball_opacue" class="table table-bordered table-condensed table-striped table-mexican table-orange pushed-first-row">
+
+<tr>
+    <td>
+        мм
+    </td>
+    <td>
+        г
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/ААА'})" rowspan="4" ng-if="($index==7)" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/ААА'})" ng-if="($index==0)" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/ААА'})" ng-if="($index==1)" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/ААА'})" ng-if="($index==2)" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/ААА'})" ng-if="($index==3)" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/АА'})" rowspan="4" ng-if="(($index==0)||($index==7))" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/А'})" rowspan="4" ng-if="(($index==0)||($index==7))" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/В'})" rowspan="4" ng-if="(($index==0)||($index==7))" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/С'})" rowspan="4" ng-if="(($index==0)||($index==7))" ng-bind="item.form4.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/ААА'})" rowspan="3" ng-if="($index==4)" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/АА'})" rowspan="3" ng-if="($index==4)" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/А'})" rowspan="3" ng-if="($index==4)" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/В'})" rowspan="3" ng-if="($index==4)" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/С'})" rowspan="3" ng-if="($index==4)" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+
+<h3 ng-show="(state.amber_class == 'Доминиканский')">Шары (голубые)</h3>
+<table ng-show="(state.amber_class == 'Доминиканский')" ng-table="tables.ball_blue" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        мм
+    </td>
+    <td>
+        г
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<h3 ng-show="(state.amber_class == 'Доминиканский')">Шары (зеленые)</h3>
+<table ng-show="(state.amber_class == 'Доминиканский')" ng-table="tables.ball_green" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        мм
+    </td>
+    <td>
+        г
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+<h3 ng-show="(state.amber_class == 'Доминиканский')">Шары (желтые)</h3>
+<table ng-show="(state.amber_class == 'Доминиканский')" ng-table="tables.ball_yellow" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        мм
+    </td>
+    <td>
+        г
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'А'})" ng-bind="item.form2.toFixed(2)"></td>
+                </tr>
+            </table>
+
+
+<h3 ng-show="((state.amber_class != 'Мексиканский')&&(state.amber_class != 'Индонезийский'))">Шары матовые</h3>
+            <table ng-show="state.amber_class != 'Мексиканский'" ng-table="tables.ball_opacue" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        мм
+    </td>
+    <td>
+        г
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/А'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/В'})" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Матовый/С'})" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+<h3 ng-show="((state.amber_class != 'Мексиканский')&&(state.amber_class != 'Индонезийский'))">Шары прозрачные</h3>
+<table  ng-show="((state.amber_class != 'Мексиканский')&&(state.amber_class != 'Индонезийский'))" ng-table="tables.ball_transparent" class="table table-bordered table-condensed table-striped table-orange pushed-first-row">
+
+<tr>
+    <td>
+        мм
+    </td>
+    <td>
+        г
+    </td>
+    <td>
+        ААА
+    </td>
+    <td>
+        АА
+    </td>
+    <td>
+        А
+    </td>
+    <td>
+        В
+    </td>
+    <td>
+        С
+    </td>
+</tr>
+                <tr class="tr-orange" ng-repeat="item in $data track by $index">
+                        <td ng-bind="item.mm"></td>
+                        <td ng-bind="item.gr"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Прозрачный/ААА'})" ng-bind="item.form0.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Прозрачный/АА'})" ng-bind="item.form1.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Прозрачный/А'})" ng-bind="item.form2.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Прозрачный/В'})" ng-bind="item.form3.toFixed(2)"></td>
+                        <td ng-click="change_state({frakcii:item.frakcii,form:'Прозрачный/С'})" ng-bind="item.form4.toFixed(2)"></td>
+                </tr>
+            </table>
+</div>
+</div>
+</div>
+
+  </div>

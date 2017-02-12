@@ -1,0 +1,66 @@
+<div class="loader" ng-hide="showapp"></div>
+<div class="b-flex b-flex-multi b-bordered" ng-init="multilines = true;" ng-show="showapp" ng-class="{'hidden':!showapp}">
+<div class="b-flex-x2">
+    <div class="b-flex-group">
+        <span class="i-wrap"><i class="i-graph-white"></i></span>
+        <select name="s_graph_time" id="s_graph_time" ng-options="option for option in select_options.graph_time" ng-model="graph.graph_time" class="form-control max-150"></select>
+        <select name="s_graph_type" id="s_graph_type" ng-options="option for option in select_options.graph_type" ng-model="graph.graph_type" class="form-control max-150"></select>
+        <span class="b-value" ng-show="graph.graph_type == 'Абсолютные значения'" ng-bind="'Стоимость('+state.currency+')'">
+        </span>
+        <span class="b-value" ng-show="graph.graph_type == 'Колебания цен'" ng-bind="'Отклонение(%)'">
+        </span>
+            </div>
+<nvd3 options="options" data="multidata" class="with-3d-shadow with-transitions" api="api"></nvd3>
+</div>
+<div class="b-flex-2 b-flex-center">
+
+
+<select name="s_amber_class" id="s_amber_class" ng-show="state.amber_type == 'Rough'" ng-options="option for option in select_options.special.amber_class" ng-model="state.amber_class" class="form-control"></select>
+<select name="s_amber_class" id="s_amber_class" ng-show="state.amber_type == 'Beads'" ng-options="option for option in select_options.amber_class" ng-model="state.amber_class" class="form-control"></select>
+
+<select name="s_amber_type" id="s_amber_type" ng-show="state.amber_class != 'Mexican (Chiapas)'" ng-options="option for option in select_options.amber_type" ng-model="state.amber_type" class="form-control"></select>
+<select name="s_amber_type" id="s_amber_type" ng-show="state.amber_class == 'Mexican (Chiapas)'" ng-options="option for option in select_options.mexican.amber_type" ng-model="state.amber_type" class="form-control"></select>
+
+
+
+
+
+
+<select name="s_frakcii_ball" ng-show="((state.amber_type == 'Beads')&&(state.amber_class != 'Dominican'))" id="s_frakcii" ng-options="option for option in select_options.ball.frakcii" ng-model="state.frakcii" class="form-control"></select>
+<select name="s_frakcii_ball" ng-show="((state.amber_type == 'Beads')&&(state.amber_class == 'Dominican'))" id="s_frakcii" ng-options="option for option in select_options.domenic.frakcii.ball" ng-model="state.frakcii" class="form-control"></select>
+
+
+<select name="s_frakcii" ng-show="((state.amber_type == 'Rough')&&(state.amber_class != 'Indonesian (Sumatra)')&&(state.amber_class != 'Dominican')&&((state.form == 'Opaque/Beadable')||(state.form == 'Transparent/Beadable')))" id="s_frakcii" ng-options="option for option in select_options.special.frakcii2" ng-model="indostate.frakcii" class="form-control"></select>
+<select name="s_frakcii" ng-show="((state.amber_type == 'Rough')&&(state.amber_class != 'Indonesian (Sumatra)')&&(state.amber_class != 'Dominican')&&((state.form == 'Opaque/Flat')||(state.form == 'Transparent/Flat')))" id="s_frakcii" ng-options="option for option in select_options.special.frakcii" ng-model="state.frakcii" class="form-control"></select>
+
+<select name="s_frakcii" ng-show="((state.amber_type == 'Rough')&&(state.amber_class == 'Dominican')&&(state.sort == 'Blue'))" id="s_frakcii" ng-options="option for option in select_options.domenic.frakcii.raw.big" ng-model="state.frakcii" class="form-control"></select>
+
+<select name="s_frakcii" ng-show="((state.amber_type == 'Rough')&&(state.amber_class == 'Dominican')&&(state.sort != 'Blue'))" id="s_frakcii" ng-options="option for option in select_options.domenic.frakcii.raw.small" ng-model="state.frakcii" class="form-control"></select>
+
+<select name="s_frakcii" ng-show="((state.amber_type == 'Rough')&&(state.amber_class == 'Indonesian (Sumatra)'))"id="s_frakcii" ng-options="option for option in select_options.indonezian.frakcii" ng-model="state.frakcii" class="form-control"></select>
+
+<select name="s_sort" ng-show="((state.amber_type == 'Rough')&&(state.amber_class != 'Indonesian (Sumatra)')&&(state.amber_class != 'Dominican'))" id="s_sort" ng-options="option for option in select_options.sort" ng-model="state.sort" class="form-control"></select>
+
+<select name="s_sort" ng-show="(((state.amber_class != 'Indonesian (Sumatra)')&&(state.amber_class == 'Dominican'))&&(state.amber_type != 'Indexes'))" id="s_sort" ng-options="option for option in select_options.domenic.sort" ng-model="state.sort" class="form-control"></select>
+
+<select name="s_sort" ng-show="((state.amber_type == 'Rough')&&(state.amber_class == 'Indonesian (Sumatra)'))" id="s_sort" ng-options="option for option in select_options.indonezian.sort" ng-model="state.sort" class="form-control"></select>
+
+<select name="s_form_ball" ng-show="((state.amber_type == 'Beads')&&((state.amber_class == 'Baltic')||(state.amber_class == 'Ukrainian')))" id="s_form" ng-options="option for option in select_options.ball.form" ng-model="state.form" class="form-control"></select>
+<select name="s_form_ball" ng-show="((state.amber_type == 'Beads')&&((state.amber_class == 'Mexican (Chiapas)')||(state.amber_class == 'Indonesian (Sumatra)')))" id="s_form" ng-options="option for option in select_options.indonezian.form" ng-model="indostate.form" class="form-control"></select>
+
+
+<select name="s_form" ng-show="((state.amber_type == 'Rough')&&(state.amber_class != 'Indonesian (Sumatra)')&&(state.amber_class != 'Dominican'))" id="s_form" ng-options="option for option in select_options.form" ng-model="state.form" class="form-control"></select>
+<select name="s_form" ng-show="(((state.amber_class != 'Indonesian (Sumatra)')&&(state.amber_class == 'Dominican'))&&(state.amber_type != 'Indexes'))" id="s_form" ng-options="option for option in select_options.domenic.form" ng-model="state.form" class="form-control"></select>
+
+<select name="s_country" id="s_country" ng-options="option for option in select_options.country" ng-model="state.country" class="form-control hidden"></select>
+
+<select name="s_amber_class" id="s_amber_class" ng-show="state.amber_type == 'Indexes'" ng-options="option for option in select_options.amber_class" ng-model="state.amber_class" class="form-control"></select>
+<select name="s_index_type" id="s_index_type" ng-show="(state.amber_type == 'Indexes')" ng-options="option for option in index_types" ng-model="state.index_type" class="form-control"></select>
+<select name="s_sub_type" id="s_sub_type" ng-show="(state.amber_type == 'Indexes')" ng-options="option for option in sub_types[state.index_type]" ng-model="state.sub_type" class="form-control"></select>
+
+
+
+<button class="btn btn-success" ng-click="add_to_bundle()">ADD</button>
+<button class="btn btn-danger" ng-click="clear_them_all()">REMOVE</button>
+</div>
+</div>

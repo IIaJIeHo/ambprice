@@ -1,0 +1,57 @@
+[fusion_text]<style>
+[ng-table-pagination]{
+display:none;
+}
+</style>
+<div class="loader" ng-hide="showapp"></div>
+<div class="b-front-form" >
+    <div class="b-flex" ng-show="showapp" ng-init="table_state='Indexes';state.amber_type='index';">
+        <div class="b-flex-2">
+            <div class="b-bordered">
+            <div class="b-flex-group b-flex-text">
+            <span class="i-wrap"><i class="i-graph-white"></i></span>
+            <div ng-bind="' Indexes - '+state.sub_type"></div>
+                        </div>
+
+                        <nvd3 ng-show="data" options="options" data="data" api="api" class="with-3d-shadow with-transitions"></nvd3>
+                        <div class="b-index">
+                            <div class="b-index-table" ng-class="{'b-index-positive':index.positive}">
+                                <span class="i-png-strelka" ng-class="{'h-rotate':index.positive}"></span>
+                                <span ng-bind="index.value.toFixed(2)+ ' ' +state.currency"></span>
+                                <span ng-bind="index.persent"></span>
+                            </div>
+                            <div class="b-index-today">
+                              Current Price: <span class="big-price" ng-bind="index.actual.toFixed(2)+' '+state.currency"></span>
+                            </div>
+                            <div class="b-index-compare">
+                                 <a href="/charts/amber-price-charts">Compare Charts<i class="i-sravnenie"></i></a>
+                            </div>  
+                        </div>
+            </div>
+            <div class="b-index-description b-bordered" ng-show="((state.amber_type == 'Indexes')&&(descriptionindex[state.sub_type]))">
+                <h3 ng-bind="state.sub_type"></h3>
+                <p ng-bind="descriptionindex[state.sub_type]"></p>
+            </div>
+        </div>
+        <div class="b-flex-2 b-bordered b-padded">
+            <div class="btn-group b-flex-group" role="group" aria-label="...">
+                <span class="i-wrap"><i class="i-price-white"></i></span>
+<select name="s_amber_class" id="s_amber_class" ng-options="option for option in select_options.amber_class" ng-model="state.amber_class" class="form-control"></select>
+<select name="s_date" class="form-control" id="s_form" ng-options="option.name for option in select_options.date" ng-model="state.date"></select>
+            </div>
+            <div class="table-wrap">
+            <div class="pull-right" ng-show="table_state != 'Indexes'">Cost per 1 kg</div>
+<table ng-table="indexes" class="table table-index">
+                <tr ng-repeat="item in $data track by $index" ng-class="{'table-index-positive':item.positive}" ng-click="change_state({amber_type:'Indexes',sub_type:item.sub_type,index_type:item.index_type})">
+                    <td><span ng-bind="item.sub_type"></span></td>
+                    <td ng-bind="item.value + ' '+state.currency"></td>
+                    <td ng-bind="item.diff_absolute+' '+state.currency"></td>
+                    <td ng-bind="item.diff + '%'"></td>
+                    <td><span class="i-png-strelka" ng-class="{'h-rotate':item.positive}"></span></td>      
+                </tr>
+            </table>
+</div>
+        </div>
+
+    </div>
+</div>[/fusion_text]
