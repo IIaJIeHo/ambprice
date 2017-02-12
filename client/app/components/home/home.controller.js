@@ -29,15 +29,14 @@ class HomeController {
         that.$scope.basestate = AmberFactory.base.baseState;
         that.$scope.state = AmberFactory.base.state;
         that.$scope.select_options = AmberFactory.base.selectOptions;
+        that.$scope.indostate = AmberFactory.base.indoState;
+        that.$scope.table_state = AmberFactory.base.tableState;
 
         that.$scope.graph = {
             graph_time: AmberFactory.base.selectOptions.graph_time[0],
             graph_type: AmberFactory.base.selectOptions.graph_type[0]
         };
 
-        that.$scope.indostate = AmberFactory.base.indoState;
-
-        that.$scope.table_state = AmberFactory.base.tableState;
 
         that.$scope.format_date = AmberFactory.functions.formatDate;
 
@@ -69,28 +68,19 @@ class HomeController {
 
     }
 
-    function set_default_state_for_amber_type(amber_type){
-        if (amber_type == 'Rough'){
-            that.$scope.state.frakcii = "20-50g.";
-            that.$scope.state.sort = "ААА";
-            that.$scope.state.form = "Opaque/Beadable";
-            that.$scope.state.country = "Европа";
-        } else if (amber_type == 'Beads'){
-            that.$scope.state.frakcii = "12mm+/1g+";
-            if (that.$scope.state.amber_class != 'Dominican'){
-                that.$scope.state.form = "Opaque/ААА";
-            }
-            
-            that.$scope.state.country = "Европа";
-        } else if (amber_type == 'Indexes'){
-            that.$scope.state.index_type = "General";
-        }
+    let set_default_state_for_amber_type = function(amber_type) {
+        let payload = AmberFactory.functions.setDefautStateByAmberType(amber_type, that.$scope.state.amber_class);
+        that.$scope.state = Object.assign({},that.$scope.state,payload);
     }
 
-  function call_ajax_to_first(posts_per_page) {
+    let postupdate = function(data){
+        return AmberFactory.functions.postUpdate(data);
+    }
+
+    function call_ajax_to_first(posts_per_page) {
     $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=first')
         .then(function(data){
-  
+
             if (data.data.length != 0) {
                 var main = postupdate(data);
                 if (counter_main < 7){
@@ -101,7 +91,7 @@ class HomeController {
 
             }
         });
-  }
+    }
 
   function start_calling() {
     call_ajax_to_first(15);
@@ -282,167 +272,6 @@ class HomeController {
             that.$scope.showapp = true;
   }
 
-  function round_to_two(str) {
-      return Math.round(parseFloat(str)*100)/100;
-  }
-
-  function postupdate(data){
-        return data.data.map(function(plans){
-                var my_array = plans.content.slice(3,-5)
-                .replace(/&#171;/g, '"')
-                .replace(/&#187;/g, '"')
-                .replace(/&#8212;/g, '-')
-                .replace(/&#8243;/g, '"');
-                my_array = unicode.unescape(my_array);
-                my_array = JSON.parse(my_array);
-                var meta_data = plans.title.split('/');
-                
-                if (meta_data[0] == 'amber') {
-                    if (meta_data[2] == 'raw'){
-                        if (meta_data[3] == 'indonezian'){
-                            my_array = my_array.map(function(arr){
-                                var random = getRandomInt(100,1000);
-                                return {
-                                    frakcii: repa(arr[0]),
-                                    sort: convert[arr[1]],
-                                    country: arr[2],
-                                    value: round_to_two(arr[3])
-                                }
-                            });
-                        } else if (meta_data[3] == 'domenic'){
-                            my_array = my_array.map(function(arr){
-                                var random = getRandomInt(100,1000);
-                                return {
-                                    frakcii: repa(arr[0]),
-                                    sort: convert[arr[2]],
-                                    form: convert[arr[1]],
-                                    country: arr[3],
-                                    value: round_to_two(arr[4])
-                                }
-                            });
-                        } else {
-                            my_array = my_array.map(function(arr){
-                                var random = getRandomInt(100,1000);
-                                return {
-                                    frakcii: repa(arr[0]),
-                                    form: convert[arr[2]],
-                                    sort: convert[arr[1]],
-                                    country: arr[3],
-                                    value: round_to_two(arr[4])
-                                }
-                            });
-                        }
-
-                    } else if (meta_data[2] == 'ball'){
-                        if (meta_data[3] == 'domenic'){
-                            my_array = my_array.map(function(arr){
-                                var random = getRandomInt(100,1000);
-                                return {
-                                    frakcii: arr[0],
-                                    form: arr[1],
-                                    sort: convert[arr[2]],
-                                    country: arr[3],
-                                    value: round_to_two(arr[4])
-                                }
-                            });
-                        } else {
-                            my_array = my_array.map(function(arr){
-                                var random = getRandomInt(100,1000);
-                                return {
-                                    frakcii: repa(arr[0]),
-                                    form: convert[arr[1]],
-                                    country: arr[2],
-                                    value: round_to_two(arr[3])
-                                }
-                            });
-                        }                    
-                        
-                    } else if (meta_data[2] == 'index'){
-                        my_array = my_array.map(function(arr){
-                            var random = getRandomInt(100,1000);
-                            var rand_diff = getRandomInt(-100,100);
-                            var type;
-                            if (arr[0] == "-"){
-                                type = "General";
-                            } else{
-                                type = convert[arr[0]];
-                            }
-                            return {
-                                index_type: type,
-                                sub_type: arr[1],
-                                country: arr[2],
-                                value: round_to_two(arr[3])
-                            }
-                        });
-                        
-                    }
-                    return {
-                      title: plans.title,
-                      type: meta_data[0],
-                      time: +(new Date(meta_data[1].split('.').join('/'))),
-                      data: my_array,
-                      amber_type: convert[meta_data[2]],
-                      amber_class: convert[meta_data[3]]
-                    };  
-
-                } else if (meta_data[0] == 'currency'){
-                    var labels = my_array[0];
-                    my_array = my_array.slice(1).map(function(arr){
-                        var temp = new Object();
-                        for(var i=0;i<arr.length;i++){
-                            temp[labels[i]] = arr[i];
-                        }
-                        return temp;
-                    });
-                    return {
-                        title: plans.title,
-                        type: meta_data[0],
-                        data: my_array
-                    }
-                } else if (meta_data[0] == 'deals'){
-                    my_array = my_array.map(function(arr){
-                        return {
-                            datetime: +(new Date(arr[0].split('.').join('/') + " "+ arr[1])),
-                            description: arr[2],
-                            weight: arr[3],
-                            old_value: arr[4],
-                            value: arr[5],
-                            diff: arr[6],
-                            title: plans.title,
-                        }
-                    });
-                    return {
-                        type: meta_data[0],
-                        data: my_array
-                    }
-                } else if (meta_data[0] == 'pricelist'){
-                    my_array = my_array.map(function(arr){
-                        var newdate = arr[0].slice(3,5)+'/'+arr[0].slice(0,2)+'/'+arr[0].slice(6);
-                        return {
-                            datetime: +(new Date(Date.parse(newdate))),
-                            link: arr[1],
-                        }
-                    });
-                    return {
-                        type: meta_data[0],
-                        data: my_array,
-                        title: plans.title
-                    }
-                } else if (meta_data[0] == 'descriptionindex') {
-                    var nicearr = {};
-                    my_array.forEach(function(arr){
-                        nicearr[arr[0]]=arr[1];
-                    });
-                    return {
-                        type: meta_data[0],
-                        data: nicearr,
-                        title: plans.title
-                    }
-                }
-                return {};
-        });
-  }
-
   function first_call(length,callback){
     $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]=1&type[]=tableme&page='+(length+1))
         .then(function(data){
@@ -466,9 +295,6 @@ class HomeController {
         });
   }
 
-  function repa(val){
-    return val.replace(/г/g, 'g').replace(/мм/g, 'mm');
-  }
 
   var tempmain = [];
   var counter_main = 0;
@@ -1864,21 +1690,5 @@ jQuery('.b-news .fusion-post-content-container p:last-of-type').each(function() 
     jQuery('.related-posts .title-heading-left').text('Other publications');
 });
 
-
-
-
-var unicode = {
-  escape: function(s) {
-    return s.replace(/^[-~]|\\/g, function(m) {
-      var code = m.charCodeAt(0);
-      return '\\u' + ((code < 0x10) ? '000' : ((code < 0x100) ? '00' : ((code < 0x1000) ? '0' : ''))) + code.toString(16);
-    });
-  },
-  unescape : function (s) {
-    return s.replace(/\\u([a-fA-F0-9]{4})/g, function(matched, g1) {
-      return String.fromCharCode(parseInt(g1, 16))
-    })
-  }
-}
 
 export default HomeController;
