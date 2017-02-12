@@ -624,13 +624,21 @@ let view = {
     }
 };
 
+let multilineOptions = {
+    width: 800,
+    height: 500,
+    legendPosition : 'bottom',
+    legend: {padding: 320,width:400,expanded:true,maxKeyLength:100,margin:{top:15}}
+}
+
   return {
     convert: convert,
     base: base,
     functions: functions,
     options: options,
     parseBundle: parseBundle,
-    view: view
+    view: view,
+    multilineOptions: multilineOptions
   };
 };
 

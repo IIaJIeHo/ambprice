@@ -66,6 +66,10 @@ class HomeController {
         }
         that.$scope.options.chart.y = function(d){ if (!d) {that.$scope.change_state(that.$scope.basestate);} else {return d.y;} }
 
+        if (that.$scope.multilines){
+            that.$scope.options.chart = Object.assign({},that.$scope.options.chart,AmberFactory.multilineOptions);
+        }
+
     }
 
     let set_default_state_for_amber_type = function(amber_type) {
@@ -80,6 +84,63 @@ class HomeController {
     let splice_array = function(main,second) {
         return AmberFactory.functions.spliceArray(main,second); /* Update data inside bundle array */
     }
+
+  function make_things_done(main){ /* to do */
+            that.$scope.bundle = main;
+            that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
+            that.$scope.currency = AmberFactory.parseBundle.currency(main);
+            that.$scope.store_indexes = AmberFactory.parseBundle.storeIndexes(main);
+            that.$scope.pricelist = AmberFactory.parseBundle.priceList(main);
+            that.$scope.descriptionindex = AmberFactory.parseBundle.descriptionIndex(main);
+            that.$scope.deals = AmberFactory.view.makeUpDeals(main);
+
+            let index_data = filter_index_country(angular.copy(that.$scope.store_indexes));
+            if (index_data.length >0) {
+                index_data[index_data.length - 1].data = index_data[index_data.length - 1].data.map(function(ind){
+                                return Object.assign({},ind,{value:ind.value,diff:add_plus_for_positive(ind.diff),diff_absolute:add_plus_for_positive(ind.diff_absolute)});
+                            });
+                            that.$scope.amberindex = index_data[index_data.length - 1].data.filter(function(val){
+                    return val.sub_type == 'Amber Index (AI)';
+                })[0];
+                that.$scope.indexes = new NgTableParams({count:100},{dataset: index_data[index_data.length - 1].data});
+                that.$scope.select_indexes = index_data[index_data.length - 1].data;
+
+                if (that.$scope.select_indexes.length > 0){
+                    var index_type = {};
+                    var sub_type = [];
+                    that.$scope.select_indexes.forEach(function (ind) {
+                        index_type[ind.index_type] = 1;
+                    });
+                    index_type = Object.keys(index_type);
+                    index_type.forEach(function(ind_type){
+                        sub_type[ind_type] = [];
+                        that.$scope.select_indexes.forEach(function (ind) {
+                            if (ind.index_type == ind_type){
+                                sub_type[ind_type].push(ind.sub_type);
+                            }
+                        });
+                    });
+                    that.$scope.index_types = index_type;
+                    that.$scope.sub_types = sub_type;
+                }
+
+            }
+
+            make_date_bundle();
+            render_table_raw();
+            render_table_ball();
+
+            that.$scope.link_to_pricelist = provide_pricelist();
+            var display = that.$scope.display();
+            if (display&&display.values&&display.values[0]&&display.values[0].y != 0){
+                that.$scope.data = [that.$scope.display()];
+            }
+            if (that.$scope.api){
+                that.$scope.api.refresh();
+            }
+            
+            that.$scope.showapp = true;
+  }
 
     function call_ajax_to_first(posts_per_page) {
         $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=first')
@@ -157,69 +218,6 @@ class HomeController {
       return AmberFactory.view.filterIndexCountry(ind, current_currency, that.$scope.state);
   }
 
-  function make_things_done(main){ /* to do */
-            that.$scope.bundle = main;
-            that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
-            that.$scope.currency = AmberFactory.parseBundle.currency(main);
-            that.$scope.store_indexes = AmberFactory.parseBundle.storeIndexes(main);
-            that.$scope.pricelist = AmberFactory.parseBundle.priceList(main);
-            that.$scope.descriptionindex = AmberFactory.parseBundle.descriptionIndex(main);
-            that.$scope.deals = AmberFactory.view.makeUpDeals(main);
-
-            let index_data = filter_index_country(angular.copy(that.$scope.store_indexes));
-            if (index_data.length >0) {
-                index_data[index_data.length - 1].data = index_data[index_data.length - 1].data.map(function(ind){
-                                return Object.assign({},ind,{value:ind.value,diff:add_plus_for_positive(ind.diff),diff_absolute:add_plus_for_positive(ind.diff_absolute)});
-                            });
-                            that.$scope.amberindex = index_data[index_data.length - 1].data.filter(function(val){
-                    return val.sub_type == 'Amber Index (AI)';
-                })[0];
-                that.$scope.indexes = new NgTableParams({count:100},{dataset: index_data[index_data.length - 1].data});
-                that.$scope.select_indexes = index_data[index_data.length - 1].data;
-
-                if (that.$scope.select_indexes.length > 0){
-                    var index_type = {};
-                    var sub_type = [];
-                    that.$scope.select_indexes.forEach(function (ind) {
-                        index_type[ind.index_type] = 1;
-                    });
-                    index_type = Object.keys(index_type);
-                    index_type.forEach(function(ind_type){
-                        sub_type[ind_type] = [];
-                        that.$scope.select_indexes.forEach(function (ind) {
-                            if (ind.index_type == ind_type){
-                                sub_type[ind_type].push(ind.sub_type);
-                            }
-                        });
-                    });
-                    that.$scope.index_types = index_type;
-                    that.$scope.sub_types = sub_type;
-                }
-
-            }
-        
-            if (that.$scope.multilines){
-                that.$scope.options.chart.width = 800;
-                that.$scope.options.chart.height = 500;
-                that.$scope.options.chart.legendPosition = 'bottom';
-                that.$scope.options.chart.legend =  {padding: 320,width:400,expanded:true,maxKeyLength:100,margin:{top:15}};
-            }
-
-            make_date_bundle();
-            render_table_raw();
-            render_table_ball();
-
-            that.$scope.link_to_pricelist = provide_pricelist();
-            var display = that.$scope.display();
-            if (display&&display.values&&display.values[0]&&display.values[0].y != 0){
-                that.$scope.data = [that.$scope.display()];
-            }
-            if (that.$scope.api){
-                that.$scope.api.refresh();
-            }
-            
-            that.$scope.showapp = true;
-  }
 
   function first_call(length,callback){
     $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]=1&type[]=tableme&page='+(length+1))
@@ -830,8 +828,6 @@ class HomeController {
                 })
                 that.$scope.state.date = that.$scope.select_options.date[that.$scope.select_options.date.length -1];
             }
-    
-            //fill the gaps
             
         }
 
