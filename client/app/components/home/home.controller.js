@@ -157,8 +157,6 @@ class HomeController {
       return AmberFactory.view.filterIndexCountry(ind, current_currency, that.$scope.state);
   }
 
-
-
   function make_things_done(main){ /* to do */
             that.$scope.bundle = main;
             that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
@@ -199,8 +197,6 @@ class HomeController {
                 }
 
             }
-
-            count_current();
         
             if (that.$scope.multilines){
                 that.$scope.options.chart.width = 800;
@@ -1030,25 +1026,6 @@ class HomeController {
             that.$scope.multidata_base.push(temp_base);
             rebuild_multibundle(that.$scope.graph.graph_time,that.$scope.graph.graph_type);
             
-        }
-        
-        function count_current(){
-            that.$scope.curr = {};
-            that.$scope.select_options.amber_type.forEach(function(type){
-                var cur = that.$scope.bundle.filter(function(data){
-                    return type == data.amber_type
-                }).sort(function(data1,data2){
-                    return data1.time - data2.time
-                });
-                that.$scope.select_options.amber_class.forEach(function(subclass){
-                    var nextcur = cur.filter(function(data){
-                        return subclass == data.amber_class;
-                    }).sort(function(data1,data2){
-                        return data1.time - data2.time
-                    });
-                    that.$scope.curr[type+subclass] = nextcur[nextcur.length - 1];
-                });
-            });
         }
 
         
