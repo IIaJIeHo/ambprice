@@ -95,14 +95,14 @@ class HomeController {
         });
     }
 
-  function start_calling() {
-    call_ajax_to_first(15);
-    var posts_per_page = 5;
-    var page = 1;
-    for(var i = page;i<8;i++){
-        call_ajax_to_add_data(posts_per_page,i);
-    }
-  }
+      function start_calling() {
+        call_ajax_to_first(15);
+        var posts_per_page = 5;
+        var page = 1;
+        for(var i = page;i<8;i++){
+            call_ajax_to_add_data(posts_per_page,i);
+        }
+      }
 
   function call_version() {
     $http.get('http://amberprice.net/wp-json/posts?type[]=tableme&filter[category_name]=version')
@@ -153,35 +153,19 @@ class HomeController {
     call_ajax_to_every(15);
   }
 
+  let filter_index_country = function (ind) {
+      return AmberFactory.view.filterIndexCountry(ind, current_currency, that.$scope.state);
+  }
 
-  function make_things_done(main){
+  function make_things_done(main){ /* to do */
             that.$scope.bundle = main;
-            that.$scope.main = that.$scope.bundle.filter(function(data){
-                return ((data.amber_type == that.$scope.state.amber_type)&&(data.amber_class == that.$scope.state.amber_class));
-            }).sort(function(data1,data2){
-                return data1.time - data2.time;
-            });
-            that.$scope.currency = that.$scope.bundle.filter(function(data){
-                return data.type == 'currency';
-            });
-            if (that.$scope.currency.length > 0) {
-                that.$scope.currency = that.$scope.currency[0].data.filter(function(data){
-                   return !!data.date; 
-                }).map(function(data){
-                    return Object.assign({},data,{string_date:data.date, date:+(new Date(data.date.split('.').join('/')))});
-                }).sort(function(data1,data2){
-                    return data1.date - data2.date;
-                }); 
-            }
-            console.log('currency');
-            console.log(that.$scope.currency);
-            that.$scope.store_indexes = that.$scope.bundle.filter(function(data){
-                return data.amber_type == 'Indexes';
-            }).sort(function(data1,data2){
-                return data1.time - data2.time;
-            });
+            that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
+            that.$scope.currency = AmberFactory.parseBundle.currency(main);
+            that.$scope.store_indexes = AmberFactory.parseBundle.storeIndexes(main);
+            that.$scope.pricelist = AmberFactory.parseBundle.priceList(main);
+            that.$scope.descriptionindex = AmberFactory.parseBundle.descriptionIndex(main);
 
-            var index_data = filter_index_country(angular.copy(that.$scope.store_indexes));
+            let index_data = filter_index_country(angular.copy(that.$scope.store_indexes));
             if (index_data.length >0) {
                 index_data[index_data.length - 1].data = index_data[index_data.length - 1].data.map(function(ind){
                                 return Object.assign({},ind,{value:ind.value,diff:add_plus_for_positive(ind.diff),diff_absolute:add_plus_for_positive(ind.diff_absolute)});
@@ -191,6 +175,7 @@ class HomeController {
                 })[0];
                 that.$scope.indexes = new NgTableParams({count:100},{dataset: index_data[index_data.length - 1].data});
                 that.$scope.select_indexes = index_data[index_data.length - 1].data;
+
                 if (that.$scope.select_indexes.length > 0){
                     var index_type = {};
                     var sub_type = [];
@@ -210,27 +195,13 @@ class HomeController {
                     that.$scope.sub_types = sub_type;
                 }
 
-
             }
 
-            
-
-            that.$scope.pricelist = that.$scope.bundle.filter(function(data){
-                return data.type == 'pricelist';
-            });
-            var tempdescription= that.$scope.bundle.filter(function (data) {
-                return data.type == 'descriptionindex';
-            });
-
-            if (tempdescription&&tempdescription[0]){
-                that.$scope.descriptionindex = tempdescription[0].data;
-            }
             make_up_deals(that.$scope.bundle.filter(function(data){
                 return data.type == 'deals';
             }));
 
             count_current();
-            
         
             if (that.$scope.multilines){
                 that.$scope.options.chart.width = 800;
@@ -923,52 +894,6 @@ class HomeController {
             });
         }
         
-        function filter_index_country(ind){
-            /* convert to currency */
-            ind = ind.filter(function (indo) {
-                return that.$scope.state.amber_class == indo.amber_class;
-            });
-            var indo = ind.map(function(index,i){
-                
-                index.data = index.data.filter(function(data){
-                    return (data.country == that.$scope.state.country);
-                });
-                console.log('before');
-                console.dir(index);
-                index.data = index.data.map(function(data){
-                    return Object.assign({},data,{value: data.value*current_currency(index.time)[that.$scope.state.currency]})
-                });
-                console.log('after');
-                console.dir(index);
-
-                return index;
-            });
-            return indo.map(function(index,i){
-                
-                index.data = index.data.map(function(data,j){
-                    data = Object.assign({},data);
-                    if (ind[i - 1]){
-                        
-                        try{
-                            data.diff_absolute = Math.round((data.value - indo[i - 1].data[j].value) * 100)/100;
-                        } catch(e) {
-                            data.diff_absolute = 0;
-                        }
-                        
-                    } else {
-                        data.diff_absolute = 0;
-                    }
-                    
-                    data.positive = (data.diff_absolute > 0);
-                    data.diff = Math.round((data.diff_absolute/(data.value-data.diff_absolute) *100)*100)/100;
-                    return data;
-                });
-
-                
-
-                return index;
-            })
-        }
 
         function filter_index_country_small (ind) {
             return index.filter(function(data){

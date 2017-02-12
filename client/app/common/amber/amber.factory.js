@@ -454,6 +454,101 @@ let round_to_two = function(str) {
       }
   }
 
+let parseBundle = {
+    main: function(bundle, state){
+        return bundle.filter(function(data){
+                return ((data.amber_type == state.amber_type)&&(data.amber_class == state.amber_class));
+        }).sort(function(data1,data2){
+            return data1.time - data2.time;
+        });
+    },
+    currency: function (bundle) {
+        let currency = bundle.filter(function(data){
+                return data.type == 'currency';
+            });
+
+        if (currency.length > 0) {
+            currency = currency[0].data.filter(function(data){
+               return !!data.date; 
+            }).map(function(data){
+                return Object.assign({},data,{string_date:data.date, date:+(new Date(data.date.split('.').join('/')))});
+            }).sort(function(data1,data2){
+                return data1.date - data2.date;
+            }); 
+        }
+
+        return currency;
+    },
+    storeIndexes: function (bundle) {
+        return bundle.filter(function(data){
+            return data.amber_type == 'Indexes';
+        }).sort(function(data1,data2){
+            return data1.time - data2.time;
+        });
+    },
+    priceList: function (bundle) {
+        return bundle.filter(function(data){
+                return data.type == 'pricelist';
+            });
+    },
+    descriptionIndex: function (bundle) {
+        var tempdescription= bundle.filter(function (data) {
+            return data.type == 'descriptionindex';
+        });
+
+        if (tempdescription&&tempdescription[0]){
+            return tempdescription[0].data;
+        } else {
+            return null;
+        }
+    }
+
+}
+
+let view = {
+    filterIndexCountry: function (ind, current_currency, state){
+        ind = ind.filter(function (indo) {
+            return state.amber_class == indo.amber_class;
+        });
+
+        var indo = ind.map(function(index,i){
+            
+            index.data = index.data.filter(function(data){
+                return (data.country == state.country);
+            });
+
+            index.data = index.data.map(function(data){
+                return Object.assign({},data,{value: data.value*current_currency(index.time)[state.currency]})
+            });
+
+            return index;
+        });
+        return indo.map(function(index,i){
+            
+            index.data = index.data.map(function(data,j){
+                data = Object.assign({},data);
+                if (ind[i - 1]){
+                    
+                    try{
+                        data.diff_absolute = Math.round((data.value - indo[i - 1].data[j].value) * 100)/100;
+                    } catch(e) {
+                        data.diff_absolute = 0;
+                    }
+                    
+                } else {
+                    data.diff_absolute = 0;
+                }
+                
+                data.positive = (data.diff_absolute > 0);
+                data.diff = Math.round((data.diff_absolute/(data.value-data.diff_absolute) *100)*100)/100;
+                return data;
+            });
+
+            return index;
+        })
+    }
+}
+
   let options = {
     chart: {
         type: 'lineChart',
@@ -517,7 +612,9 @@ let round_to_two = function(str) {
     convert: convert,
     base: base,
     functions: functions,
-    options: options
+    options: options,
+    parseBundle: parseBundle,
+    view: view
   };
 };
 
