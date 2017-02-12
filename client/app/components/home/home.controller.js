@@ -87,6 +87,7 @@ class HomeController {
 
   function make_things_done(main){ /* to do */
             that.$scope.bundle = main;
+            console.log(JSON.stringify(that.$scope.bundle));
             that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
             that.$scope.currency = AmberFactory.parseBundle.currency(main);
             that.$scope.store_indexes = AmberFactory.parseBundle.storeIndexes(main);
