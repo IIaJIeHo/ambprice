@@ -157,6 +157,8 @@ class HomeController {
       return AmberFactory.view.filterIndexCountry(ind, current_currency, that.$scope.state);
   }
 
+
+
   function make_things_done(main){ /* to do */
             that.$scope.bundle = main;
             that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
@@ -164,6 +166,7 @@ class HomeController {
             that.$scope.store_indexes = AmberFactory.parseBundle.storeIndexes(main);
             that.$scope.pricelist = AmberFactory.parseBundle.priceList(main);
             that.$scope.descriptionindex = AmberFactory.parseBundle.descriptionIndex(main);
+            that.$scope.deals = AmberFactory.view.makeUpDeals(main);
 
             let index_data = filter_index_country(angular.copy(that.$scope.store_indexes));
             if (index_data.length >0) {
@@ -196,10 +199,6 @@ class HomeController {
                 }
 
             }
-
-            make_up_deals(that.$scope.bundle.filter(function(data){
-                return data.type == 'deals';
-            }));
 
             count_current();
         
@@ -1373,14 +1372,6 @@ class HomeController {
 
         }
         
-        function make_up_deals(deals){
-            if(deals[0]){
-                deals = deals[0].data.map(function(deal) {
-                    return Object.assign({},deal,{positive:(+(deal.diff)>0)});
-                })
-                that.$scope.deals = new NgTableParams({count:100},{dataset: deals});
-            }
-        }
         
         function get_element_table(sort_param){
             var criteria,result;

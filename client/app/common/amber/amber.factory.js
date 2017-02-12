@@ -1,4 +1,5 @@
 import store from '../store';
+import { NgTableParams } from 'ng-table';
 
 let AmberFactory = function () {
 
@@ -501,6 +502,11 @@ let parseBundle = {
         } else {
             return null;
         }
+    },
+    deals: function (bundle) {
+        return bundle.filter(function(data){
+            return data.type == 'deals';
+        })
     }
 
 }
@@ -546,6 +552,16 @@ let view = {
 
             return index;
         })
+    },
+    makeUpDeals: function(bundle) {
+        let deals = parseBundle.deals(bundle);
+
+        if(deals&&deals[0]){
+            deals = deals[0].data.map(function(deal) {
+                return Object.assign({},deal,{positive:(+(deal.diff)>0)});
+            })
+            return new NgTableParams({count:100},{dataset: deals});
+        }
     }
 }
 
