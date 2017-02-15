@@ -464,6 +464,26 @@ let round_to_two = function(str) {
             return date1.value - date2.value;
         });
         return date;
+    },
+    getCurrentBundle: function(date, am_class, am_type, data_bundle){
+        var list_of_dates = Object.keys(data_bundle).sort(function (date1,date2) {
+                return parseInt(date1) - parseInt(date2);
+            });
+        if(data_bundle){
+            var curr_index = list_of_dates.indexOf(date);
+            var target;
+            for (var i = curr_index;i >= 0;i--){
+                if (data_bundle[list_of_dates[i]]){
+                    if (data_bundle[list_of_dates[i]][am_class]){
+                        target = data_bundle[list_of_dates[i]][am_class][am_type];
+                    }
+                }
+                if (target){
+                    return target;
+                }
+            }
+        }
+        return null;
     }
   }
 
@@ -519,7 +539,7 @@ let parseBundle = {
         return bundle.filter(function(data){
             return data.type == 'deals';
         })
-    }
+    },
     dataBundle: function(bundle){
         let data_bundle = {};
         bundle.forEach(function(table){
