@@ -484,6 +484,28 @@ let round_to_two = function(str) {
             }
         }
         return null;
+    },
+    setCurrency: function(base, currency, current_currency, state){
+        var cur;
+        if (currency.length == 0) {
+            cur = 1;
+        } else {
+            cur = current_currency()[state.currency];
+        }
+        return base.map(function(item){
+           return Object.assign({},item,{form0:Math.round(item.form0*cur * 100) / 100,
+                                        form1:Math.round(item.form1*cur * 100) / 100,
+                                        form2:Math.round(item.form2*cur * 100) / 100,
+                                        form3:Math.round(item.form3*cur * 100) / 100,
+                                        form4:Math.round(item.form4*cur * 100) / 100,
+                                        form5:Math.round(item.form5*cur * 100) / 100,
+                                        sort1:Math.round(item.sort1*cur * 100) / 100,
+                                        sort2:Math.round(item.sort2*cur * 100) / 100,
+                                        sort0:Math.round(item.sort0*cur * 100) / 100,
+                                        sort3:Math.round(item.sort3*cur * 100) / 100,
+                                        sort4:Math.round(item.sort4*cur * 100) / 100 //переделать в более компактный вид
+                                        }) 
+        });
     }
   }
 

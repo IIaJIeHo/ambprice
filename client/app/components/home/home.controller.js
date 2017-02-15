@@ -98,24 +98,30 @@ class HomeController {
         return AmberFactory.functions.getCurrentBundle(date, am_class, am_type, that.$scope.data_bundle);
     }
 
+    let set_currency = function(base){
+        return AmberFactory.functions.setCurrency(base, that.$scope.currency, current_currency, that.$scope.state);
+    }
+
         function render_table_raw(){
             base = [];
             if (that.$scope.state.date){
                 that.$scope.current = get_current_bundle(that.$scope.state.date.value, that.$scope.state.amber_class,'Rough');
             }
+
             if (that.$scope.current) {
-            if (that.$scope.state.amber_class == 'Indonesian (Sumatra)'){
-                that.$scope.select_options.indonezian.frakcii.forEach(function(option){
-                    base.push({
-                        frakcii: option
+
+                if (that.$scope.state.amber_class == 'Indonesian (Sumatra)'){
+                    that.$scope.select_options.indonezian.frakcii.forEach(function(option){
+                        base.push({
+                            frakcii: option
+                        });
                     });
-                });
-            } else if (that.$scope.state.amber_class == 'Dominican'){
-                            that.$scope.select_options.domenic.frakcii.raw.big.forEach(function(option){
-                                base.push({
-                                    frakcii: option
-                                });
-                            });
+                } else if (that.$scope.state.amber_class == 'Dominican'){
+                    that.$scope.select_options.domenic.frakcii.raw.big.forEach(function(option){
+                        base.push({
+                            frakcii: option
+                        });
+                    });
                     var base_blue = angular.copy(base).map(function(arr){
                         that.$scope.select_options.domenic.form.forEach(function(fo,i){
                                 arr["form"+i] = get_element_table({
@@ -129,6 +135,7 @@ class HomeController {
                         arr.gr = arr.frakcii.split('/')[1];
                         return arr;
                     });
+
                     base_blue = set_currency(base_blue);
                     that.$scope.tables.raw_blue = new NgTableParams({count:100}, {dataset: base_blue});
                     that.$scope.tables.raw_blue.reload();
@@ -157,11 +164,11 @@ class HomeController {
                     that.$scope.tables.raw_green.reload(); 
                     base = [];
 
-                            that.$scope.select_options.domenic.frakcii.raw.small.forEach(function(option){
-                                base.push({
-                                    frakcii: option
-                                });
-                            });
+                    that.$scope.select_options.domenic.frakcii.raw.small.forEach(function(option){
+                        base.push({
+                            frakcii: option
+                        });
+                    });
 
                     var base_yellow = angular.copy(base).map(function(arr){
                         that.$scope.select_options.domenic.form.forEach(function(fo,i){
@@ -183,13 +190,9 @@ class HomeController {
                     
                     that.$scope.tables.raw_yellow = new NgTableParams({count:100}, {dataset: base_yellow});
                     
-                    
                     that.$scope.tables.raw_yellow.reload();
-                        
-
-
-            } else {
-                that.$scope.select_options.frakcii.forEach(function(option){
+                } else {
+                    that.$scope.select_options.frakcii.forEach(function(option){
                         var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
                             var biggy = !b.some(function(el){
                                 return el == option;
@@ -217,54 +220,53 @@ class HomeController {
                                 });
                             }
 
-                });
-            }
-
-            if (that.$scope.state.amber_class == 'Indonesian (Sumatra)'){
-                base.map(function(arr){
-                    that.$scope.select_options.indonezian.sort.forEach(function(so,i){
-                        arr["form"+i]= get_element_table({
-                            frakcii: arr.frakcii,
-                            form: arr.form,
-                            sort: so,
-                            type: 'Rough'
-                        });
                     });
-                    return arr;
-                });
-            } else {
-                base.map(function(arr){
-                    that.$scope.select_options.sort.forEach(function(so,i){
-                    
-                        arr["form"+i]= get_element_table({
-                            frakcii: arr.frakcii,
-                            form: arr.form,
-                            sort: so,
-                            type: 'Rough'
-                        });
-                    });
-                    return arr;
-                });
-               
-            }
+                }
 
-            base = set_currency(base);
-            var big_base = base.filter(function(row){
-                var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
-                return b.some(function(val){
-                    return row.frakcii == val;
+                if (that.$scope.state.amber_class == 'Indonesian (Sumatra)'){
+                    base.map(function(arr){
+                        that.$scope.select_options.indonezian.sort.forEach(function(so,i){
+                            arr["form"+i]= get_element_table({
+                                frakcii: arr.frakcii,
+                                form: arr.form,
+                                sort: so,
+                                type: 'Rough'
+                            });
+                        });
+                        return arr;
+                    });
+                } else {
+                    base.map(function(arr){
+                        that.$scope.select_options.sort.forEach(function(so,i){
+                            arr["form"+i]= get_element_table({
+                                frakcii: arr.frakcii,
+                                form: arr.form,
+                                sort: so,
+                                type: 'Rough'
+                            });
+                        });
+                        return arr;
+                    });
+                   
+                }
+
+                base = set_currency(base);
+                var big_base = base.filter(function(row){
+                    var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
+                    return b.some(function(val){
+                        return row.frakcii == val;
+                    });
                 });
-            });
-            that.$scope.tables.bigraw = new NgTableParams({count:100}, {dataset: big_base});
-            that.$scope.tables.bigraw.reload();
-            var small_base = base.filter(function(row){
-                var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
-                return b.every(function(val){
-                    return row.frakcii != val;
+                that.$scope.tables.bigraw = new NgTableParams({count:100}, {dataset: big_base});
+                that.$scope.tables.bigraw.reload();
+                var small_base = base.filter(function(row){
+                    var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
+                    return b.every(function(val){
+                        return row.frakcii != val;
+                    });
                 });
-            });
-            that.$scope.tables.raw = new NgTableParams({count:100}, { dataset: small_base});
-            that.$scope.tables.raw.reload();
+                that.$scope.tables.raw = new NgTableParams({count:100}, { dataset: small_base});
+                that.$scope.tables.raw.reload();
             }
 
         }
@@ -1261,28 +1263,6 @@ class HomeController {
             
         }
         
-        function set_currency(base){
-            var cur;
-            if (that.$scope.currency.length == 0) {
-                cur = 1;
-            } else {
-                cur = current_currency()[that.$scope.state.currency];
-            }
-            return base.map(function(item){
-               return Object.assign({},item,{form0:Math.round(item.form0*cur * 100) / 100,
-                                            form1:Math.round(item.form1*cur * 100) / 100,
-                                            form2:Math.round(item.form2*cur * 100) / 100,
-                                            form3:Math.round(item.form3*cur * 100) / 100,
-                                            form4:Math.round(item.form4*cur * 100) / 100,
-                                            form5:Math.round(item.form5*cur * 100) / 100,
-                                            sort1:Math.round(item.sort1*cur * 100) / 100,
-                                            sort2:Math.round(item.sort2*cur * 100) / 100,
-                                            sort0:Math.round(item.sort0*cur * 100) / 100,
-                                            sort3:Math.round(item.sort3*cur * 100) / 100,
-                                            sort4:Math.round(item.sort4*cur * 100) / 100 //переделать в более компактный вид
-                                            }) 
-            });
-        }
 
         that.$scope.cutedges = function(input){
             if (input){
