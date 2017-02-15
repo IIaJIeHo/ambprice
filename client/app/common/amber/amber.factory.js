@@ -452,7 +452,19 @@ let round_to_two = function(str) {
         } else {
             return second;
         }
-      }
+      },
+    selectOptionDate: function(data_bundle, format_date){
+        let date = Object.keys(data_bundle);
+        date = date.map(function(date){
+            return {
+                name: format_date(date),
+                value: date
+            }
+        }).sort(function (date1,date2) {
+            return date1.value - date2.value;
+        });
+        return date;
+    }
   }
 
 let parseBundle = {
@@ -508,6 +520,24 @@ let parseBundle = {
             return data.type == 'deals';
         })
     }
+    dataBundle: function(bundle){
+        let data_bundle = {};
+        bundle.forEach(function(table){
+            if (table.time&&table.amber_class&&table.amber_type){
+                if (!data_bundle[table.time]){
+                    data_bundle[table.time] = {};
+                }
+                
+                if (!data_bundle[table.time][table.amber_class]){
+                    data_bundle[table.time][table.amber_class] = {};
+                }
+                data_bundle[table.time][table.amber_class][table.amber_type] = table.data;
+            }
+        });
+
+        return data_bundle;
+    }
+
 
 }
 

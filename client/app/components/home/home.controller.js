@@ -85,6 +85,16 @@ class HomeController {
         return AmberFactory.functions.spliceArray(main,second); /* Update data inside bundle array */
     }
 
+    let make_date_bundle = function(){
+            that.$scope.data_bundle = AmberFactory.parseBundle.dataBundle(that.$scope.bundle); /* bundle out of scope */
+
+            if (that.$scope.data_bundle){
+                that.$scope.select_options.date = AmberFactory.functions.selectOptionDate(that.$scope.data_bundle, AmberFactory.functions.formatDate);
+                that.$scope.state.date = that.$scope.select_options.date[that.$scope.select_options.date.length -1];
+            }
+            
+    }
+
   function make_things_done(main){ /* to do */
             that.$scope.bundle = main;
             console.log(JSON.stringify(that.$scope.bundle));
@@ -802,35 +812,7 @@ class HomeController {
 
 
 
-        function make_date_bundle(){
-            that.$scope.data_bundle = {};
-            that.$scope.bundle.forEach(function(table){
-                if (table.time&&table.amber_class&&table.amber_type){
-                    if (!that.$scope.data_bundle[table.time]){
-                        that.$scope.data_bundle[table.time] = {};
-                    }
-                    
-                    if (!that.$scope.data_bundle[table.time][table.amber_class]){
-                        that.$scope.data_bundle[table.time][table.amber_class] = {};
-                    }
-                    that.$scope.data_bundle[table.time][table.amber_class][table.amber_type] = table.data;
-                }
-            });
 
-            if (that.$scope.data_bundle){
-                that.$scope.select_options.date = Object.keys(that.$scope.data_bundle);
-                that.$scope.select_options.date = that.$scope.select_options.date.map(function(date){
-                    return {
-                        name: that.$scope.format_date(date),
-                        value: date
-                    }
-                }).sort(function (date1,date2) {
-                    return date1.value - date2.value;
-                })
-                that.$scope.state.date = that.$scope.select_options.date[that.$scope.select_options.date.length -1];
-            }
-            
-        }
 
         function get_current_bundle(date,am_class,am_type){
             var list_of_dates = Object.keys(that.$scope.data_bundle).sort(function (date1,date2) {
