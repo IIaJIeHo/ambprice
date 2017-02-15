@@ -858,7 +858,52 @@ let render = {
 
                 });
             }
-            return base;
+
+            if (amber_class == 'Indonesian (Sumatra)'){
+                base.map(function(arr){
+                    select_options.indonezian.sort.forEach(function(so,i){
+                        arr["form"+i]= get_element_table({
+                            frakcii: arr.frakcii,
+                            form: arr.form,
+                            sort: so,
+                            type: 'Rough'
+                        });
+                    });
+                    return arr;
+                });
+            } else {
+                base.map(function(arr){
+                    select_options.sort.forEach(function(so,i){
+                        arr["form"+i]= get_element_table({
+                            frakcii: arr.frakcii,
+                            form: arr.form,
+                            sort: so,
+                            type: 'Rough'
+                        });
+                    });
+                    return arr;
+                });
+               
+            }
+
+            base = set_currency(base);
+
+            var big_base = base.filter(function(row){
+                var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
+                return b.some(function(val){
+                    return row.frakcii == val;
+                });
+            });
+            tables.bigraw = new NgTableParams({count:100}, {dataset: big_base});
+            tables.bigraw.reload();
+            var small_base = base.filter(function(row){
+                var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
+                return b.every(function(val){
+                    return row.frakcii != val;
+                });
+            });
+            tables.raw = new NgTableParams({count:100}, { dataset: small_base});
+            tables.raw.reload();
         }
     }
 }

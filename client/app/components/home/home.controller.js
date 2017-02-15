@@ -107,61 +107,8 @@ class HomeController {
     }
 
     function render_table_raw(){
-        base = [];
-        if (that.$scope.state.date){
-            that.$scope.current = get_current_bundle(that.$scope.state.date.value, that.$scope.state.amber_class,'Rough');
-        }
-
-        if (that.$scope.current) {
-
-            base = AmberFactory.render.tableRaw.base(base, that.$scope.state.amber_class, that.$scope.select_options, get_element_table, set_currency, that.$scope.tables);
-
-            if (that.$scope.state.amber_class == 'Indonesian (Sumatra)'){
-                base.map(function(arr){
-                    that.$scope.select_options.indonezian.sort.forEach(function(so,i){
-                        arr["form"+i]= get_element_table({
-                            frakcii: arr.frakcii,
-                            form: arr.form,
-                            sort: so,
-                            type: 'Rough'
-                        });
-                    });
-                    return arr;
-                });
-            } else {
-                base.map(function(arr){
-                    that.$scope.select_options.sort.forEach(function(so,i){
-                        arr["form"+i]= get_element_table({
-                            frakcii: arr.frakcii,
-                            form: arr.form,
-                            sort: so,
-                            type: 'Rough'
-                        });
-                    });
-                    return arr;
-                });
-               
-            }
-
-            base = set_currency(base);
-            var big_base = base.filter(function(row){
-                var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
-                return b.some(function(val){
-                    return row.frakcii == val;
-                });
-            });
-            that.$scope.tables.bigraw = new NgTableParams({count:100}, {dataset: big_base});
-            that.$scope.tables.bigraw.reload();
-            var small_base = base.filter(function(row){
-                var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
-                return b.every(function(val){
-                    return row.frakcii != val;
-                });
-            });
-            that.$scope.tables.raw = new NgTableParams({count:100}, { dataset: small_base});
-            that.$scope.tables.raw.reload();
-        }
-
+        that.$scope.current = that.$scope.state.date ? get_current_bundle(that.$scope.state.date.value, that.$scope.state.amber_class,'Rough') : null;
+        that.$scope.current ? AmberFactory.render.tableRaw.base([], that.$scope.state.amber_class, that.$scope.select_options, get_element_table, set_currency, that.$scope.tables) : null;
     }
 
   function make_things_done(main){ /* to do */
