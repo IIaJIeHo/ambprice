@@ -102,6 +102,10 @@ class HomeController {
         return AmberFactory.functions.setCurrency(base, that.$scope.currency, current_currency, that.$scope.state);
     }
 
+    function get_element_table(sort_param){
+        return AmberFactory.functions.getElementTable(sort_param,that.$scope.state.country,that.$scope.init_date,that.$scope.price_table, that.$scope.current);            
+    }
+
         function render_table_raw(){
             base = [];
             if (that.$scope.state.date){
@@ -1276,50 +1280,7 @@ class HomeController {
                 return input.split('/')[0];
             }
         }
-        
-        
-        function get_element_table(sort_param){
-            var criteria,result;
-            sort_param.country = that.$scope.state.country;
-            if (sort_param.type == 'Rough') {
-                if ((sort_param.sort == "Низкое") || (sort_param.sort == "Черный лак")){
-                    criteria = function(value){
-                        return ((value.country == sort_param.country)&&(value.frakcii ==  sort_param.frakcii)&&(value.sort == sort_param.sort));
-                    }   
-                } else {
-                    criteria = function(value){
-                        return ((value.country == sort_param.country)&&(value.form == sort_param.form)&&(value.frakcii ==  sort_param.frakcii)&&(value.sort == sort_param.sort));
-                    }
-                }
-                
-            } else if (sort_param.type = 'Beads'){
-                if ((sort_param.sort == 'Blue')||(sort_param.sort == 'Green')||(sort_param.sort == 'Yellow')){
-                    criteria = function(value){
-                            return ((value.country == sort_param.country)&&(value.frakcii ==  sort_param.frakcii)&&(value.form == sort_param.form)&&(value.sort == sort_param.sort));
-                    }
-                } else {
-                    criteria = function(value){
-                            return ((value.country == sort_param.country)&&(value.frakcii ==  sort_param.frakcii)&&(value.form == sort_param.form));
-                    }
-                }
-
-            }
-            if (that.$scope.init_date == 'Rough'){
-                result = that.$scope.price_table['Rough'].filter(criteria)[0];
-            } else if (that.$scope.init_date == 'Beads'){
-                result = that.$scope.price_table['Beads'].filter(criteria)[0];
-            } else {
-                result = that.$scope.current.filter(criteria)[0];
-            }
-            if (result){
-                return result.value;
-            } else {
-                return 0;
-            }
             
-        }
-        
-        
         
         that.$scope.change_state = function(updates) {
             that.$scope.state = Object.assign(that.$scope.state,updates);

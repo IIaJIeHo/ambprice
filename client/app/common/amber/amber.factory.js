@@ -506,6 +506,46 @@ let round_to_two = function(str) {
                                         sort4:Math.round(item.sort4*cur * 100) / 100 //переделать в более компактный вид
                                         }) 
         });
+    },
+    getElementTable: function(sort_param, country, init_date, price_table, current) {
+        var criteria,result;
+        sort_param.country = country;
+        if (sort_param.type == 'Rough') {
+            if ((sort_param.sort == "Низкое") || (sort_param.sort == "Черный лак")){
+                criteria = function(value){
+                    return ((value.country == sort_param.country)&&(value.frakcii ==  sort_param.frakcii)&&(value.sort == sort_param.sort));
+                }   
+            } else {
+                criteria = function(value){
+                    return ((value.country == sort_param.country)&&(value.form == sort_param.form)&&(value.frakcii ==  sort_param.frakcii)&&(value.sort == sort_param.sort));
+                }
+            }
+            
+        } else if (sort_param.type = 'Beads'){
+            if ((sort_param.sort == 'Blue')||(sort_param.sort == 'Green')||(sort_param.sort == 'Yellow')){
+                criteria = function(value){
+                        return ((value.country == sort_param.country)&&(value.frakcii ==  sort_param.frakcii)&&(value.form == sort_param.form)&&(value.sort == sort_param.sort));
+                }
+            } else {
+                criteria = function(value){
+                        return ((value.country == sort_param.country)&&(value.frakcii ==  sort_param.frakcii)&&(value.form == sort_param.form));
+                }
+            }
+
+        }
+        if (init_date == 'Rough'){
+            result = price_table['Rough'].filter(criteria)[0];
+        } else if (init_date == 'Beads'){
+            result = price_table['Beads'].filter(criteria)[0];
+        } else {
+            result = current.filter(criteria)[0];
+        }
+        if (result){
+            return result.value;
+        } else {
+            return 0;
+        }
+        
     }
   }
 
@@ -703,6 +743,126 @@ let multilineOptions = {
     legend: {padding: 320,width:400,expanded:true,maxKeyLength:100,margin:{top:15}}
 }
 
+let render = {
+    tableRaw: {
+        base: function(base, amber_class, select_options, get_element_table, set_currency, tables){
+            if (amber_class == 'Indonesian (Sumatra)'){
+                select_options.indonezian.frakcii.forEach(function(option){
+                    base.push({
+                        frakcii: option
+                    });
+                });
+            } else if (amber_class == 'Dominican'){
+                select_options.domenic.frakcii.raw.big.forEach(function(option){
+                    base.push({
+                        frakcii: option
+                    });
+                });
+                var base_blue = angular.copy(base).map(function(arr){
+                    select_options.domenic.form.forEach(function(fo,i){
+                            arr["form"+i] = get_element_table({
+                                frakcii: arr.frakcii,
+                                sort: 'Blue',
+                                form: fo,
+                                type: 'Rough'
+                            });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+
+                base_blue = set_currency(base_blue);
+                tables.raw_blue = new NgTableParams({count:100}, {dataset: base_blue});
+                tables.raw_blue.reload();
+                base = [];
+
+                select_options.domenic.frakcii.raw.small.forEach(function(option){
+                    base.push({
+                        frakcii: option
+                    });
+                });
+                var base_green = angular.copy(base).map(function(arr){
+                    select_options.domenic.form.forEach(function(fo,i){
+                            arr["form"+i] = get_element_table({
+                                frakcii: arr.frakcii,
+                                sort: 'Green',
+                                form: fo,
+                                type: 'Rough'
+                            });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+                base_green = set_currency(base_green);
+                tables.raw_green = new NgTableParams({count:100}, {dataset: base_green});
+                tables.raw_green.reload(); 
+                base = [];
+
+                select_options.domenic.frakcii.raw.small.forEach(function(option){
+                    base.push({
+                        frakcii: option
+                    });
+                });
+
+                var base_yellow = angular.copy(base).map(function(arr){
+                    select_options.domenic.form.forEach(function(fo,i){
+                            arr["form"+i] = get_element_table({
+                                frakcii: arr.frakcii,
+                                sort: 'Yellow',
+                                form: fo,
+                                type: 'Rough'
+                            });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+                
+                
+                base_yellow = set_currency(base_yellow);
+                
+                
+                tables.raw_yellow = new NgTableParams({count:100}, {dataset: base_yellow});
+                
+                tables.raw_yellow.reload();
+            } else {
+                select_options.frakcii.forEach(function(option){
+                    var b = ['100g.','200g.','300g.','500g.','1000g.'].reverse();
+                        var biggy = !b.some(function(el){
+                            return el == option;
+                        });
+                        base.push({
+                            frakcii:option,
+                            form:"Opaque/Beadable"
+                        });
+                        base.push({
+                            frakcii:option,
+                            form:"Transparent/Beadable"
+                        });
+                        if (biggy){
+                            base.push({
+                                frakcii:option,
+                                form:"Opaque/Flat"
+                            });
+                        }
+
+
+                        if (biggy){
+                            base.push({
+                                frakcii:option,
+                                form:"Transparent/Flat"
+                            });
+                        }
+
+                });
+            }
+            return base;
+        }
+    }
+}
+
   return {
     convert: convert,
     base: base,
@@ -710,7 +870,8 @@ let multilineOptions = {
     options: options,
     parseBundle: parseBundle,
     view: view,
-    multilineOptions: multilineOptions
+    multilineOptions: multilineOptions,
+    render: render
   };
 };
 
