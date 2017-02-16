@@ -598,6 +598,14 @@ let round_to_two = function(str) {
                 data.diff = (data.diff_absolute/(data.value-data.diff_absolute) *100).toFixed(2);
                 return data;
             });
+    },
+    getRandomColor: function() {
+        var letters = '0123456789abcdef';
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     }
   }
 

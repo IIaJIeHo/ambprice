@@ -935,7 +935,6 @@ class HomeController {
             if (input){
                 return input.split('/')[1][0]+input.split('/')[0][0];
             }
-            
         }
 
         that.$scope.getFirstWord = function (input) {
@@ -950,16 +949,8 @@ class HomeController {
         };
         
         function getRandomColor() {
-            var letters = '0123456789abcdef';
-            var color = '#';
-            for (var i = 0; i < 6; i++ ) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
+            return AmberFactory.functions.getRandomColor();
         }
-
-        //that.$scope.data = sinAndCos();
-        
 
         function criteria_func(){
            if (that.$scope.state.amber_type == 'Rough'){
@@ -993,36 +984,6 @@ class HomeController {
            }
        }
        
-        
-        function getRandomInt(min, max)
-        {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-
-        /*Random Data Generator */
-        function sinAndCos() {
-            var sin = [],sin2 = [],
-                cos = [];
-
-            //Data is represented as an array of {x,y} pairs.
-            for (var i = 0; i < 100; i++) {
-                sin.push({x: i, y: Math.sin(i/10)});
-                sin2.push({x: i, y: i % 10 == 5 ? null : Math.sin(i/10) *0.25 + 0.5});
-                cos.push({x: i, y: .5 * Math.cos(i/10+ 2) + Math.random() / 10});
-            }
-
-            //Line chart data should be sent as an array of series objects.
-            return [
-                {
-                    values: sin,      //values - represents the array of {x,y} data points
-                    key: 'Sine Wave', //key  - the name of the series.
-                    color: '#ff7f0e',  //color - optional: choose your own line color.
-                    strokeWidth: 2,
-                    classed: 'dashed'
-                }
-            ];
-        };
   }
 }
 
