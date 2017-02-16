@@ -4,9 +4,9 @@ import store from '../../common/store';
 import initSlider from './initSlider';
 
 class HomeController {
-  static $inject = ['$scope','$http', 'AmberFactory'];
+  static $inject = ['$scope','$http', 'AmberFactory', 'AmberAjaxFactory'];
 
-  constructor($scope,$http, AmberFactory) {
+  constructor($scope,$http, AmberFactory, AmberAjaxFactory) {
 
     let convert = AmberFactory.convert;
 
@@ -193,18 +193,20 @@ class HomeController {
   }
 
     function call_ajax_to_first(posts_per_page) {
-        $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=first')
+        AmberAjaxFactory.ajaxToFirst(posts_per_page)
             .then(function(data){
-
-            if (data.data.length != 0) {
-                var main = postupdate(data);
-                if (counter_main < 7){
-                    that.$scope.bundle = splice_array(that.$scope.bundle,main);
-                    make_things_done(that.$scope.bundle);
-                }
-            } 
+                if (data.data.length != 0) {
+                    console.log("GGGGGGGOOOOOOOOOO")
+                    var main = postupdate(data);
+                    if (counter_main < 7){
+                        that.$scope.bundle = splice_array(that.$scope.bundle,main);
+                        make_things_done(that.$scope.bundle);
+                    }
+                } 
         });
     }
+    /* test call */
+    call_ajax_to_first(15);
 
   function start_calling() {
     call_ajax_to_first(15);
