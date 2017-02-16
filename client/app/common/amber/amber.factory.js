@@ -905,6 +905,107 @@ let render = {
             tables.raw = new NgTableParams({count:100}, { dataset: small_base});
             tables.raw.reload();
         }
+    },
+    tableBall: {
+        base: function(base, amber_class, select_options, get_element_table, set_currency, tables){
+            if (amber_class == 'Dominican'){
+                select_options.domenic.frakcii.ball.forEach(function(option){
+                    base.push({
+                        frakcii: option
+                    });
+                });
+                var base_blue = angular.copy(base).map(function(arr){
+                    select_options.domenic.form.forEach(function(fo,i){
+                            arr["form"+i] = get_element_table({
+                                frakcii: arr.frakcii,
+                                sort: 'Blue',
+                                form: fo,
+                                type: 'Beads'
+                            });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+                var base_green = angular.copy(base).map(function(arr){
+                    select_options.domenic.form.forEach(function(fo,i){
+                            arr["form"+i] = get_element_table({
+                                frakcii: arr.frakcii,
+                                sort: 'Green',
+                                form: fo,
+                                type: 'Beads'
+                            });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+                var base_yellow = angular.copy(base).map(function(arr){
+                    select_options.domenic.form.forEach(function(fo,i){
+                            arr["form"+i] = get_element_table({
+                                frakcii: arr.frakcii,
+                                sort: 'Yellow',
+                                form: fo,
+                                type: 'Beads'
+                            });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+                base_blue = set_currency(base_blue);
+                base_green = set_currency(base_green);
+                base_yellow = set_currency(base_yellow);
+                tables.ball_blue = new NgTableParams({count:100}, {dataset: base_blue});
+                tables.ball_green = new NgTableParams({count:100}, {dataset: base_green});
+                tables.ball_yellow = new NgTableParams({count:100}, {dataset: base_yellow});
+                tables.ball_blue.reload();
+                tables.ball_green.reload(); 
+                tables.ball_yellow.reload();
+                
+            } else {
+                select_options.ball.frakcii.forEach(function(option){
+                    base.push({
+                        frakcii:option
+                    });
+                });
+
+
+                var base_opacue = angular.copy(base).map(function(arr){
+                    select_options.ball.form.slice(0,5).forEach(function(fo,i){
+                        arr["form"+i] = get_element_table({
+                            frakcii: arr.frakcii,
+                            form: fo,
+                            type: 'Beads'
+                        });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+                var base_transparent = angular.copy(base).map(function(arr){
+                    select_options.ball.form.slice(5,10).forEach(function(fo,i){
+                        arr["form"+i] = get_element_table({
+                            frakcii: arr.frakcii,
+                            form: fo,
+                            type: 'Beads'
+                        });
+                    });
+                    arr.mm = arr.frakcii.split('/')[0];
+                    arr.gr = arr.frakcii.split('/')[1];
+                    return arr;
+                });
+                base_opacue = set_currency(base_opacue);
+                base_transparent = set_currency(base_transparent);
+
+                tables.ball = new NgTableParams({count:100}, {dataset: base_opacue});
+                tables.ball_opacue = new NgTableParams({count:100}, {dataset: base_opacue});
+                tables.ball_transparent = new NgTableParams({count:100}, {dataset: base_transparent});
+                tables.ball.reload();
+                tables.ball_opacue.reload(); 
+                tables.ball_transparent.reload();
+            }
+        }
     }
 }
 
