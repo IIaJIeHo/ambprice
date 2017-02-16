@@ -562,6 +562,42 @@ let round_to_two = function(str) {
         } else {
             return null;
         }
+    },
+    addPlusForPositive: function(num){
+        if (typeof num == "number"){
+            return num > 0 ? "+"+num.toFixed(2) : num.toFixed(2);
+        }
+        else {
+            if (num[0] == "-"){
+                return num;
+            } else{
+                return "+"+num;
+            }
+        }
+    },
+    concato: function() {
+        return [].slice.call(arguments,0).reduce(function (s,i) {
+            return s+i;
+        });
+    },
+    filterIndexCountrySmall: function(ind, country, current_currency, currency) {
+        return index.filter(function(data){
+                return data.country == country;
+            })
+            .map(function(data){
+                return Object.assign({},data,{value: data.value*current_currency()[currency]})
+            })
+            .map(function(data,j){
+                if (ind[i - 1]){
+                    data.diff_absolute = data.value - ind[i - 1].data[j].value;
+                } else {
+                    data.diff_absolute = 0;
+                }
+                
+                data.positive = (data.diff_absolute > 0);
+                data.diff = (data.diff_absolute/(data.value-data.diff_absolute) *100).toFixed(2);
+                return data;
+            });
     }
   }
 
@@ -757,6 +793,41 @@ let multilineOptions = {
     height: 500,
     legendPosition : 'bottom',
     legend: {padding: 320,width:400,expanded:true,maxKeyLength:100,margin:{top:15}}
+}
+
+let multiCharts = {
+    yDomainRe: function(pass_data, multidata) {
+        if (!pass_data) pass_data = multidata;
+        var yDomainMin=Number.POSITIVE_INFINITY,yDomainMax=0;
+        pass_data.forEach(function (graph) {
+            graph.values.forEach(function (data) {
+
+                if (data.y > yDomainMax){
+                    yDomainMax = data.y;
+                }
+                if (data.y < yDomainMin){
+                    yDomainMin = data.y;
+                }
+            });
+        });
+        return yDomainMin < 0 ? [yDomainMin*1.04, yDomainMax*1.04] : [yDomainMin*0.96, yDomainMax*1.04]    
+    },
+    xDomainRe: function(pass_data, multidata) {
+        if (!pass_data) pass_data = multidata;
+        var xDomainMin=Number.POSITIVE_INFINITY,xDomainMax=0;
+        pass_data.forEach(function (graph) {
+
+            graph.values.forEach(function (data) {
+                if (data.x > xDomainMax){
+                    xDomainMax = data.x;
+                }
+                if (data.x < xDomainMin){
+                    xDomainMin = data.x;
+                }
+            });
+        });
+        return [xDomainMin, xDomainMax];
+    }
 }
 
 let render = {
@@ -1033,7 +1104,8 @@ let render = {
     parseBundle: parseBundle,
     view: view,
     multilineOptions: multilineOptions,
-    render: render
+    render: render,
+    multiCharts: multiCharts
   };
 };
 

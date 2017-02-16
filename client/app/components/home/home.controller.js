@@ -125,6 +125,14 @@ class HomeController {
         return AmberFactory.functions.providePricelist(that.$scope.state.date,that.$scope.pricelist);
     }
 
+    let add_plus_for_positive = function(num){
+        return AmberFactory.functions.addPlusForPositive(num);
+    }
+
+    let filter_index_country_small = function(ind) {
+        return AmberFactory.functions.filterIndexCountrySmall(ind,that.$scope.state.country,current_currency,that.$scope.state.currency)
+    }
+
   function make_things_done(main){ /* to do */
             that.$scope.bundle = main;
             that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
@@ -413,16 +421,6 @@ class HomeController {
                 return (event&&event.title&&(event.title.length > 0));
             });
 
-            // Object.keys(that.$scope.event_container).forEach(function (keys) {
-            //     var temp = that.$scope.event_container[keys].filter(function (elem,index,self) {
-            //         return index == self.indexOf(elem);
-            //     });
-            //     temp = temp.map(function (t) {
-            //         return {id:t,title:t};
-            //     })
-            //     that.$scope.event_container[key] = temp;
-            // });
-
             that.$scope.event_container["start_date"] = that.$scope.event_container["start_date"].map(function (date) {
                 return {id:date.id,title:that.$scope.format_date(date.title)};
             });
@@ -430,16 +428,6 @@ class HomeController {
                 return {id:date.id,title:that.$scope.format_date(date.title)};
             });
 
-            // console.log('that.$scope.container1');
-            // console.log(that.$scope.event_container);
-            // that.$scope.event_container = that.$scope.event_container.map(function (events) {
-            //     return events.map(function (event) {
-            //         return {id:event,title:event};
-            //     })
-            // });
-            // console.log('that.$scope.container2');
-            // console.log(that.$scope.event_container);
-            // console.log(main);
             that.$scope.events = new NgTableParams({count:100},{dataset: main});
             that.$scope.showevent = true;
             });
@@ -447,11 +435,7 @@ class HomeController {
         
 
         that.$scope.change_current_event_month = function(increase) {
-            if (increase){
-                that.$scope.current_event_month+=1;
-            } else{
-                that.$scope.current_event_month-=1;
-            }
+            that.$scope.current_event_month = increase ? ++that.$scope.current_event_month : --that.$scope.current_event_month;
         }
          call_data();
 
@@ -738,7 +722,6 @@ class HomeController {
 
             }
             
-
         },true);
 
         that.$scope.$watch('showapp',function (new_value) {
@@ -750,7 +733,6 @@ class HomeController {
                     that.$scope.state.amber_class = 'Baltic';
                 },50);
             }
-
         })
 
         that.$scope.$watch('table_state',function(new_value){
@@ -775,7 +757,6 @@ class HomeController {
         },true);
 
         
-
         that.$scope.$watch('graph',function(new_value){
             rebuild_multibundle(new_value.graph_time,new_value.graph_type);
         },true);
@@ -792,8 +773,6 @@ class HomeController {
         },true);
         
         that.$scope.$watch('data', function(new_data){
-          console.log('new_data');
-          console.log(new_data);
           if (new_data){
             var arr = new_data[0].values,
                 length = arr.length,
@@ -819,57 +798,23 @@ class HomeController {
             
         },true);
 
-    
-
-        function add_plus_for_positive(num){
-
-            if (typeof num == "number"){
-                return num > 0 ? "+"+num.toFixed(2) : num.toFixed(2);
-            }
-            else {
-                if (num[0] == "-"){
-                    return num;
-                } else{
-                    return "+"+num;
-                }
-            }
-        }
-
         that.$scope.makemoresymbol = function(s){
-            return concato('>',s);
-        }
-
-        function concato() {
-            return [].slice.call(arguments,0).reduce(function (s,i) {
-                return s+i;
-            });
-        }
-        
-
-        function filter_index_country_small (ind) {
-            return index.filter(function(data){
-                    return data.country == that.$scope.state.country;
-                })
-                .map(function(data){
-                    return Object.assign({},data,{value: data.value*current_currency()[that.$scope.state.currency]})
-                })
-                .map(function(data,j){
-                    if (ind[i - 1]){
-                        data.diff_absolute = data.value - ind[i - 1].data[j].value;
-                    } else {
-                        data.diff_absolute = 0;
-                    }
-                    
-                    data.positive = (data.diff_absolute > 0);
-                    data.diff = (data.diff_absolute/(data.value-data.diff_absolute) *100).toFixed(2);
-                    return data;
-                });
+            return AmberFactory.functions.concato('>',s);
         }
 
         var height_of_chart = 550;
+
         that.$scope.clear_them_all = function () {
             that.$scope.multidata = [];
             that.$scope.multidata_base = [];
+        }
+
+        function yDomainRe(pass_data) {
+            that.$scope.options.chart.yDomain = AmberFactory.multiCharts.yDomainRe(pass_data, that.$scope.multidata);            
+        }
+
+        function xDomainRe(pass_data) {
+            that.$scope.options.chart.xDomain = AmberFactory.multiCharts.xDomainRe(pass_data, that.$scope.multidata); 
         }
 
 
@@ -885,8 +830,6 @@ class HomeController {
             } else {
                 localtime = 0;
             }
-
-
                             
             if (type == 'Absolute values'){
                             var temp_multidata = angular.copy(that.$scope.multidata_base);
@@ -1016,47 +959,6 @@ class HomeController {
         }
 
         //that.$scope.data = sinAndCos();
-
-        function yDomainRe(pass_data) {
-            if (!pass_data) pass_data = that.$scope.multidata;
-            var yDomainMin=Number.POSITIVE_INFINITY,yDomainMax=0;
-            pass_data.forEach(function (graph) {
-                graph.values.forEach(function (data) {
-
-                    if (data.y > yDomainMax){
-                        yDomainMax = data.y;
-                    }
-                    if (data.y < yDomainMin){
-                        yDomainMin = data.y;
-                    }
-                });
-            });
-            if (yDomainMin < 0){
-                that.$scope.options.chart.yDomain = [yDomainMin*1.04, yDomainMax*1.04];
-            } else {
-                that.$scope.options.chart.yDomain = [yDomainMin*0.96, yDomainMax*1.04];
-            }
-            
-
-        }
-
-        function xDomainRe(pass_data) {
-            if (!pass_data) pass_data = that.$scope.multidata;
-            var xDomainMin=Number.POSITIVE_INFINITY,xDomainMax=0;
-            pass_data.forEach(function (graph) {
-
-                graph.values.forEach(function (data) {
-                    if (data.x > xDomainMax){
-                        xDomainMax = data.x;
-                    }
-                    if (data.x < xDomainMin){
-                        xDomainMin = data.x;
-                    }
-                });
-            });
-            that.$scope.options.chart.xDomain = [xDomainMin, xDomainMax];
-
-        }
         
 
         function criteria_func(){
