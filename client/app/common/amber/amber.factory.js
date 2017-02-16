@@ -546,6 +546,22 @@ let round_to_two = function(str) {
             return 0;
         }
         
+    },
+    providePricelist: function(date,pricelist){
+        if (date){
+            var date = date.value;
+            if (pricelist&&pricelist[0]){
+                var my_pricelist = pricelist[0].data.filter(function (price) {
+                    return price.datetime == date;
+                })[0];
+                if (!my_pricelist) my_pricelist = pricelist[0].data;
+                return my_pricelist.link; 
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
   }
 

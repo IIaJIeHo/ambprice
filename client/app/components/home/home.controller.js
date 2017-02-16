@@ -120,6 +120,10 @@ class HomeController {
         that.$scope.current ? AmberFactory.render.tableBall.base([], that.$scope.state.amber_class, that.$scope.select_options, get_element_table, set_currency, that.$scope.tables) : null;
     }
 
+    let provide_pricelist = function(){
+        return AmberFactory.functions.providePricelist(that.$scope.state.date,that.$scope.pricelist);
+    }
+
   function make_things_done(main){ /* to do */
             that.$scope.bundle = main;
             that.$scope.main = AmberFactory.parseBundle.main(main,that.$scope.state); /* parse all these things to class p = new parseBundle(main) */
@@ -166,6 +170,7 @@ class HomeController {
             render_table_ball();
 
             that.$scope.link_to_pricelist = provide_pricelist();
+
             var display = that.$scope.display();
             if (display&&display.values&&display.values[0]&&display.values[0].y != 0){
                 that.$scope.data = [that.$scope.display()];
@@ -812,23 +817,6 @@ class HomeController {
             
         },true);
 
-
-        function provide_pricelist(){
-            if (that.$scope.state.date){
-                var date = that.$scope.state.date.value;
-                if (that.$scope.pricelist[0]){
-                    var pricelist = that.$scope.pricelist[0].data.filter(function (price) {
-                        return price.datetime == date;
-                    })[0];
-                    if (!pricelist) pricelist = that.$scope.pricelist[0].data;
-                    return pricelist.link; 
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        }
     
 
         function add_plus_for_positive(num){
