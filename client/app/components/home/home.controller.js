@@ -1,6 +1,7 @@
 import { NgTableParams } from 'ng-table';
 import jQuery from 'jquery';
 import store from '../../common/store';
+import initSlider from './initSlider';
 
 class HomeController {
   static $inject = ['$scope','$http', 'AmberFactory'];
@@ -172,6 +173,7 @@ class HomeController {
             that.$scope.link_to_pricelist = provide_pricelist();
 
             var display = that.$scope.display();
+
             if (display&&display.values&&display.values[0]&&display.values[0].y != 0){
                 that.$scope.data = [that.$scope.display()];
             }
@@ -196,14 +198,14 @@ class HomeController {
         });
     }
 
-      function start_calling() {
-        call_ajax_to_first(15);
-        var posts_per_page = 5;
-        var page = 1;
-        for(var i = page;i<8;i++){
-            call_ajax_to_add_data(posts_per_page,i);
-        }
-      }
+  function start_calling() {
+    call_ajax_to_first(15);
+    var posts_per_page = 5;
+    var page = 1;
+    for(var i = page;i<8;i++){
+        call_ajax_to_add_data(posts_per_page,i);
+    }
+  }
 
   function call_version() {
     $http.get('http://amberprice.net/wp-json/posts?type[]=tableme&filter[category_name]=version')
@@ -376,7 +378,7 @@ class HomeController {
                     current_month = 0;
                 }
             }
-            window.init_slider();
+            initSlider();
             that.$scope.current_event_month = (new Date()).getMonth();
             that.$scope.event_state =[];
             that.$scope.example_events = [];
@@ -1121,57 +1123,5 @@ class HomeController {
         };
   }
 }
-
-window.init_slider = function(){
-  jQuery('#checkbox').change(function(){
-    setInterval(function () {
-        moveRight();
-    }, 3000);
-  });
-  
-    var slideCount = jQuery('#slider ul li').length;
-    var slideWidth = jQuery('#slider ul li').width();
-    var slideHeight = jQuery('#slider ul li').height();
-    var sliderUlWidth = slideCount * slideWidth;
-    
-    jQuery('#slider').css({ width: slideWidth, height: slideHeight });
-    
-    jQuery('#slider ul').css({ width: sliderUlWidth, marginLeft: - slideWidth });
-    
-    jQuery('#slider ul li:last-child').prependTo('#slider ul');
-
-    function moveLeft() {
-        jQuery('#slider ul').animate({
-            left: + slideWidth
-        }, 200, function () {
-            jQuery('#slider ul li:last-child').prependTo('#slider ul');
-            jQuery('#slider ul').css('left', '');
-        });
-    };
-
-    function moveRight() {
-        jQuery('#slider ul').animate({
-            left: - slideWidth
-        }, 200, function () {
-            jQuery('#slider ul li:first-child').appendTo('#slider ul');
-            jQuery('#slider ul').css('left', '');
-        });
-    };
-
-    jQuery('a.control_prev').click(function () {
-        moveLeft();
-    });
-
-    jQuery('a.control_next').click(function () {
-        moveRight();
-    });
-} 
-jQuery( document ).ready(function() {
-jQuery('.b-news .fusion-post-content-container p:last-of-type').each(function() {
-  jQuery(that.$scope).text(jQuery(that.$scope).text()+'...');
-});
-    jQuery('.related-posts .title-heading-left').text('Other publications');
-});
-
 
 export default HomeController;
