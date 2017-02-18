@@ -195,8 +195,7 @@ class HomeController {
     function call_ajax_to_first(posts_per_page) {
         AmberAjaxFactory.ajaxToFirst(posts_per_page)
             .then(function(data){
-                if (data.data.length != 0) {
-                    console.log("GGGGGGGOOOOOOOOOO")
+                if (data) {
                     var main = postupdate(data);
                     if (counter_main < 7){
                         that.$scope.bundle = splice_array(that.$scope.bundle,main);
@@ -218,7 +217,7 @@ class HomeController {
   }
 
   function call_version() {
-    $http.get('http://amberprice.net/wp-json/posts?type[]=tableme&filter[category_name]=version')
+    AmberAjaxFactory.version()
         .then(function(data){
             try{
                 if (that.$scope.get_from_localStorage){
@@ -251,7 +250,6 @@ class HomeController {
     set_default_state_for_amber_type();
 
     if (window.localStorage){
-
         var tabledata = store.get('tabledata');
         that.$scope.version = store.get('version');
         call_version();
@@ -269,7 +267,7 @@ class HomeController {
 
 
   function first_call(length,callback){
-    $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]=1&type[]=tableme&page='+(length+1))
+    AmberAjaxFactory.firstCall(length)
         .then(function(data){
             if (data.data.length > 0) {
                 callback();
@@ -277,16 +275,15 @@ class HomeController {
         });
   }
 
-  function call_ajax_to_data() {
-    $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]=100&type[]=tableme')
+  function call_ajax_to_data() { /* could delete, because it is not loading */
+    AmberAjaxFactory.ajaxFullBanch()
         .then(function(data){
-
             var main = postupdate(data);
 
             if (window.localStorage){
-            store.remove('tabledata');
-            store.set('tabledata',main);
-        }
+                store.remove('tabledata');
+                store.set('tabledata',main);
+            }
             make_things_done(main);
         });
   }
@@ -295,6 +292,7 @@ class HomeController {
   var tempmain = [];
   var counter_main = 0;
   var counter_bundle = 0;
+  /* Put all calls into separate class*/
 
   function call_ajax_to_every(posts_per_page) {
     $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=every')
