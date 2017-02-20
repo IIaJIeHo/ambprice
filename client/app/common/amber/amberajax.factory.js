@@ -32,6 +32,18 @@ class AmberAjaxFactory {
     return HTTP.get(this).get(baseUrl+'&filter[posts_per_page]=200');
   }
 
+  ajaxForEvery(posts_per_page) { /* understand, why do we need to call some data every time */
+    return HTTP.get(this).get(baseUrl+'&filter[posts_per_page]='+posts_per_page+'&filter[category_name]=every');
+  }
+
+  perPage(posts_per_page,page) {
+    return HTTP.get(this).get(baseUrl+'&filter[posts_per_page]='+posts_per_page+'&page='+page);
+  }
+
+  events(){
+    return HTTP.get(this).get('http://amberprice.net/wp-json/posts?type[]=events&&filter[posts_per_page]=1000');
+  }
+
   static ajaxFactory($http){
     return new AmberAjaxFactory($http);
   }

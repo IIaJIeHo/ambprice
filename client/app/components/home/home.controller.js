@@ -295,9 +295,8 @@ class HomeController {
   /* Put all calls into separate class*/
 
   function call_ajax_to_every(posts_per_page) {
-    $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&filter[category_name]=every')
+    AmberAjaxFactory.ajaxForEvery(posts_per_page)
         .then(function(data){
-
             if (data.data.length != 0) {
                 var main = postupdate(data);
                 if (counter_main < 7){
@@ -311,7 +310,7 @@ class HomeController {
   }
 
   function call_ajax_to_add_data(posts_per_page,page) {
-    $http.get('http://amberprice.net/wp-json/posts?filter[posts_per_page]='+posts_per_page+'&type[]=tableme&page='+page)
+    AmberAjaxFactory.perPage(posts_per_page,page)
         .then(function(data){
  
             if (data.data.length != 0) {
@@ -342,7 +341,7 @@ class HomeController {
 
  
 
-        $http.get('http://amberprice.net/wp-json/posts?type[]=events&&filter[posts_per_page]=1000')
+        AmberAjaxFactory.events()
         .then(function(data){
             
             var main = data.data.map(function(event){
